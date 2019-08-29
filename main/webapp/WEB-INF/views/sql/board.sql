@@ -70,9 +70,9 @@ b_show char(1) default 'Y',    --게시판 출력 여부
 b_secret char(1) default 'N'  --비밀글 여부
 );
 
-drop sequence seq_board;
-create sequence seq_board
-start with 208
+drop sequence seq_b;
+create sequence seq_b
+start with 202
 increment by 1;
 
 

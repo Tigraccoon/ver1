@@ -35,7 +35,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<!-- 작성글 글번호 -->
 	<select id="getcurrval" resultType="int">
-		SELECT seq_b.currval FROM dual
+		SELECT max(b_num) FROM board
 	</select>
 	
 	<!-- 댓글 갯수 -->
