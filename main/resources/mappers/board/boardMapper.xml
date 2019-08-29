@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 다른 mapper와 중복되지 않도록 네임스페이스 기재 -->
+<mapper namespace="board">
+<!-- select -->
+	<!-- 글 갯수 -->
+	<select id="b_count" resultType="int">
+		SELECT count(*) 
+			FROM board b 
+			<include refid="search" />
+	</select>
+	
+	<!-- 글 리스트 -->
+	<select id="b_list" resultType="BoardDTO">
+		SELECT * FROM (
+			SELECT rownum AS rn, 
+			A.* FROM (
+				SELECT b_num,b_writer,b_subject,b_date,b_readcount,b_show,b_secret
+	  				,(select count(*) from board_comment c where c.b_num=b.b_num and c_show='Y') c_count 					
+					FROM board b
+					<include refid="search" />
+					ORDER BY b_num DESC 
+					) A
+		) WHERE rn BETWEEN #{begin} AND #{end}
+	</select>
+	
+	<!-- 글보기 -->
+	<select id="b_view" resultType="BoardDTO">
+		SELECT * FROM board 
+			WHERE b_num=#{b_num}
+	</select>
+	
+	<!-- 작성글 글번호 -->
+	<select id="getcurrval" resultType="int">
+		SELECT seq_b.currval FROM dual
+	</select>
+	
+	<!-- 댓글 갯수 -->
+	<select id="c_count" resultType="int">
+		SELECT count(*) FROM board_comment 
+			WHERE b_num=#{b_num} AND c_show='Y'
+	</select>
+	
+<!-- /select -->
+	
+<!-- insert -->
+	<!-- 글쓰기 -->
+	<insert id="b_insert">
+		INSERT INTO board 
+			(b_num, b_writer, b_pwd, b_subject, b_content) 
+			VALUES(seq_b.nextval, #{b_writer}, #{b_pwd}, #{b_subject}, #{b_content})
+	</insert>
+	
+<!-- /insert -->
+	
+<!-- update -->
+	<!-- 조회수 증가 -->
+	<update id="b_upcount">
+		UPDATE board SET b_readcount=b_readcount+1
+			WHERE b_num=#{b_num}
+	</update>
+	
+	<!-- 글 수정 -->
+	<update id="b_update">
+		UPDATE board 
+			SET b_subject=#{b_subject}, b_content=#{b_content}, b_secret=#{b_secret},
+			b_writer=#{b_writer}, b_pwd=#{b_pwd}
+			WHERE b_num=#{b_num}
+	</update>
+	
+<!-- /update -->
+	
+<!-- delete -->
+	<update id="b_delete">
+		UPDATE board
+			SET b_show='N' 
+			WHERE b_num=#{b_num}
+	</update>
+	
+<!-- /delete -->
+
+<!-- sql -->
+	<!-- 게시글 키워드 검색 -->
+	<sql id="search">
+		WHERE b.b_show='Y' 
+		<choose>
+			<when test="option == 'writer'">
+				AND b.b_writer LIKE #{keyword}
+			</when>
+			<when test="option == 'subject'">
+				AND b.b_subject LIKE #{keyword}
+			</when>
+			<otherwise>
+				AND (b.b_writer LIKE #{keyword} OR b.b_subject LIKE #{keyword})
+			</otherwise>
+		</choose>
+	</sql>
+	
+<!-- /sql -->
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
