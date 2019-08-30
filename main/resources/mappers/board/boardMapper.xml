@@ -19,6 +19,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			SELECT rownum AS rn, 
 			A.* FROM (
 				SELECT b_num,b_writer,b_subject,b_date,b_readcount,b_show,b_secret
+					,ROW_NUMBER() OVER(ORDER BY b_num ASC) as idx
 	  				,(select count(*) from board_comment c where c.b_num=b.b_num and c_show='Y') c_count 					
 					FROM board b
 					<include refid="search" />
@@ -44,6 +45,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			WHERE b_num=#{b_num} AND c_show='Y'
 	</select>
 	
+	<!-- 비밀번호 확인 -->
+	<select id="pwdcheck" resultType="int">
+		SELECT count(*) FROM board 
+			WHERE b_num=#{b_num} AND b_writer=#{b_writer} AND b_pwd=#{b_pwd}
+	</select>
+	
 <!-- /select -->
 	
 <!-- insert -->
@@ -66,7 +73,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<!-- 글 수정 -->
 	<update id="b_update">
 		UPDATE board 
-			SET b_subject=#{b_subject}, b_content=#{b_content}, b_secret=#{b_secret},
+			SET b_subject=#{b_subject}, b_content=#{b_content},
 			b_writer=#{b_writer}, b_pwd=#{b_pwd}
 			WHERE b_num=#{b_num}
 	</update>

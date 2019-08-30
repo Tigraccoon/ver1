@@ -15,6 +15,7 @@ public class BoardDTO {
 	private String b_secret;
 	private int c_count;
 	private int b_count;
+	private int idx;
 	public int getB_num() {
 		return b_num;
 	}
@@ -81,12 +82,20 @@ public class BoardDTO {
 	public void setB_count(int b_count) {
 		this.b_count = b_count;
 	}
+	public int getIdx() {
+		return idx;
+	}
+	public void setIdx(int idx) {
+		this.idx = idx;
+	}
 	@Override
 	public String toString() {
 		return "BoardDTO [b_num=" + b_num + ", b_writer=" + b_writer + ", b_pwd=" + b_pwd + ", b_subject=" + b_subject
 				+ ", b_content=" + b_content + ", b_readcount=" + b_readcount + ", b_date=" + b_date + ", b_show="
-				+ b_show + ", b_secret=" + b_secret + ", c_count=" + c_count + ", b_count=" + b_count + "]";
+				+ b_show + ", b_secret=" + b_secret + ", c_count=" + c_count + ", b_count=" + b_count + ", idx=" + idx
+				+ "]";
 	}
+	
 	
 	
 }

@@ -90,4 +90,17 @@ public class BoardDAOImpl implements BoardDAO {
 		return sqlSession.selectOne("board.c_count", b_num);
 	}
 
+	@Override
+	public boolean pwdcheck(BoardDTO dto) {
+		
+		int result = sqlSession.selectOne("board.pwdcheck", dto);
+
+		if(result == 1) {
+			return true;
+		} else {
+			return false;
+		}
+		
+	}
+
 }

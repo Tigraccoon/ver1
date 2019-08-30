@@ -110,17 +110,23 @@ commit;
 
 select * from board order by b_num desc;
 
+select count(*) from board where b_num=214 and b_writer='123123' and b_pwd='1234';
+
 SELECT * FROM (
-			SELECT rownum AS rn, 
+			SELECT rownum AS rn,
 			A.* FROM (
-				SELECT b_num,b_writer,b_subject,b_date,b_readcount,b_show,b_secret
-	  				,(select count(*) from board_comment c where c.b_num=b.b_num and c_show='Y') c_count 					
+				SELECT b_num,b_writer,b_subject,b_date,b_readcount,b_show,b_secret ,ROW_NUMBER() OVER(ORDER BY b_num ASC) as idx
+	  				,(select count(*) from board_comment c where c.b_num=b.b_num and c_show='Y') c_count					
 					FROM board b
 					WHERE b.b_show='Y' AND b.b_writer LIKE '%'
 					ORDER BY b_num DESC 
 					) A
 		) WHERE rn BETWEEN 1 AND 10;
+        
 
+
+create index b_num_idx on board(b_num, b_writer);
+drop index b_num_idx;
 
 SELECT seq_b.currval FROM dual;
 select seq_board.nextval from dual;
@@ -130,3 +136,4 @@ INSERT INTO board
 			VALUES(seq_board.nextval, '累己磊1', '1234', '力俊格', '郴局局局局侩');
 
 commit;
+

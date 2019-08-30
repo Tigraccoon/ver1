@@ -16,5 +16,6 @@ public interface BoardDAO {
 	public void b_upcount(int b_num);									//조회수 증가
 	public int b_count(String option, String keyword);				//글 갯수
 	public int c_count(int b_num);
+	public boolean pwdcheck(BoardDTO dto);
 	
 }

@@ -5,8 +5,8 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>글쓰기</title>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css">
+<title>수정/삭제</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote-bs4.css" rel="stylesheet">
 	<%@ include file="../include/header.jsp" %>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
@@ -14,7 +14,8 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.12/summernote-bs4.js"></script>
     <script src="${path }/include/summernote/lang/summernote-ko-KR.js"></script>
-<script type="text/javascript">
+    
+    <script type="text/javascript">
 $(document).ready(function() {
 	$('#b_content').summernote({
 		placeholder: '본문을 입력하세요.',
@@ -24,7 +25,7 @@ $(document).ready(function() {
 		lang : 'ko-KR'
 	});
 	
-	$("#dowrite").click(function(){
+	$("#btnUpdate").click(function(){
 		
 		var b_writer = $("#b_writer");
 		var b_pwd = $("#b_pwd");
@@ -52,8 +53,21 @@ $(document).ready(function() {
 			return;
 		}
 		
-		document.writeform.submit();
+		document.updateform.action="${path}/board/boardupdate.do";
+		document.updateform.submit();
 	});
+	
+	$("#btnDelete").click(function(){
+		
+		if(confirm("정말 삭제하시겠습니까?")==true){
+			
+			document.updateform.action="${path}/board/boarddelete.do";
+			document.updateform.submit();
+		} else{
+			return;
+		}
+	});
+	
 	
 });
 
@@ -65,14 +79,14 @@ $(document).ready(function() {
 	<div class="row justify-content-center">
 		<div class="col col-10">
 <br>
-<form action="${path}/board/boardwrite.do" method="post" id="writeform" name="writeform" >
+<form action="${path}/board/boardwrite.do" method="post" id="updateform" name="updateform">
 <table class="table table-borderless" style="width: 100%; text-align: center;">
 	<tr class="table-primary">
-		<th colspan="2"><h2>글쓰기</h2></th>
+		<th colspan="2"><h2>글 수정/삭제</h2></th>
 	</tr>
 	<tr class="table-primary">
 		<th><label for="b_writer">작성자</label></th>
-		<td><input type="text" name="b_writer" id="b_writer" class="form-control" required="required" placeholder="이름을 입력하세요."></td>
+		<td><input type="text" name="b_writer" id="b_writer" class="form-control" required="required" placeholder="이름을 입력하세요." value="${var.b_writer }"></td>
 	</tr>
 	<tr class="table-primary">
 		<th><label for="b_pwd">비밀번호</label></th>
@@ -80,17 +94,19 @@ $(document).ready(function() {
 	</tr>
 	<tr class="table-primary">
 		<th><label for="b_subject">제목</label></th>
-		<td><input type="text" name="b_subject" id="b_subject" class="form-control" placeholder="제목을 입력하세요." required="required"></td>
+		<td><input type="text" name="b_subject" id="b_subject" class="form-control" placeholder="제목을 입력하세요." required="required" value="${var.b_subject }"></td>
 	</tr>
 	<tr class="table-primary">
 		<th colspan="2"><label for="b_content">본문</label></th>
 	</tr>
 	<tr class="table-primary" style="text-align: left;">
-		<td colspan="2"><textarea name="b_content" id="b_content" class="form-control" required="required"></textarea></td>
+		<td colspan="2"><textarea name="b_content" id="b_content" class="form-control" required="required">${var.b_content }</textarea></td>
 	</tr>
 	<tr class="table-primary">
 		<td colspan="2">
-			<input type="button" value="글쓰기" class="btn btn-block btn-primary" id="dowrite">
+			<input type="button" value="수정" class="btn btn-block btn-primary" id="btnUpdate"><br>
+			<input type="button" value="삭제" class="btn btn-block btn-danger" id="btnDelete">
+			<input type="hidden" value="${var.b_num }" name="b_num" id="b_num">
 		</td>
 	</tr>
 	<tr class="table-primary">

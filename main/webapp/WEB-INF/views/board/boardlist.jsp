@@ -59,7 +59,7 @@ function list(page, option, keyword){
 	<!-- 일반글 -->
 		<c:if test="${list.b_show == 'Y' && list.b_secret == 'N'}">
 		<tr>
-			<th scope="row">${list.b_num }</th>
+			<th scope="row">${list.idx }</th>
 			<td>${list.b_writer }</td>
 			<td style="text-align: left;">
 				<a href="${path }/board/boardview.go?b_num=${list.b_num}">${list.b_subject } 

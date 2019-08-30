@@ -51,6 +51,27 @@ public class BoardController {
 		
 		List<BoardDTO> b_list = boardDao.b_list(option, "%"+keyword+"%", begin, end);
 		
+		//제목, 이름 특수문자처리
+		for(BoardDTO dto : b_list) {
+			String b_subject = dto.getB_subject();
+			
+			b_subject = b_subject.replace("<", "&lt;");
+			b_subject = b_subject.replace(">", "&gt;");
+			b_subject = b_subject.replace("\n", "<br>");
+			b_subject = b_subject.replace("  ", "&nbsp;&nbsp;");
+			
+			dto.setB_subject(b_subject);
+			
+			String b_writer = dto.getB_writer();
+			
+			b_writer = b_writer.replace("<", "&lt;");
+			b_writer = b_writer.replace(">", "&gt;");
+			b_writer = b_writer.replace("\n", "<br>");
+			b_writer = b_writer.replace("  ", "&nbsp;&nbsp;");
+			
+			dto.setB_writer(b_writer);
+		}
+		
 		HashMap<String, Object> map = new HashMap<>();
 		map.put("b_list", b_list);
 		map.put("count", b_count);
@@ -82,7 +103,28 @@ public class BoardController {
 	public ModelAndView boardviewgo(@RequestParam int b_num, ModelAndView mav, HttpSession session) {
 		
 		mav.setViewName("board/boardview");
-		mav.addObject("var", boardDao.b_view(b_num, session));
+		
+		BoardDTO dto = boardDao.b_view(b_num, session);
+		
+		String b_subject = dto.getB_subject();
+		
+		b_subject = b_subject.replace("<", "&lt;");
+		b_subject = b_subject.replace(">", "&gt;");
+		b_subject = b_subject.replace("\n", "<br>");
+		b_subject = b_subject.replace("  ", "&nbsp;&nbsp;");
+		
+		dto.setB_subject(b_subject);
+		
+		String b_writer = dto.getB_writer();
+		
+		b_writer = b_writer.replace("<", "&lt;");
+		b_writer = b_writer.replace(">", "&gt;");
+		b_writer = b_writer.replace("\n", "<br>");
+		b_writer = b_writer.replace("  ", "&nbsp;&nbsp;");
+		
+		dto.setB_writer(b_writer);
+		
+		mav.addObject("var", dto);
 		
 		int c_count = boardDao.c_count(b_num);
 		mav.addObject("c_count", c_count);
@@ -93,5 +135,60 @@ public class BoardController {
 		
 		return mav;
 	}
+	
+	
+	@RequestMapping("b_update.go")
+	public ModelAndView updatego(@ModelAttribute BoardDTO dto, ModelAndView mav, HttpSession session) {
+		
+		BoardDTO tempdto = boardDao.b_view(dto.getB_num(), session);
+		
+		String b_subject = tempdto.getB_subject();
+		
+		b_subject = b_subject.replace("<", "&lt;");
+		b_subject = b_subject.replace(">", "&gt;");
+		b_subject = b_subject.replace("\n", "<br>");
+		b_subject = b_subject.replace("  ", "&nbsp;&nbsp;");
+		
+		tempdto.setB_subject(b_subject);
+		
+		String b_writer = tempdto.getB_writer();
+		
+		b_writer = b_writer.replace("<", "&lt;");
+		b_writer = b_writer.replace(">", "&gt;");
+		b_writer = b_writer.replace("\n", "<br>");
+		b_writer = b_writer.replace("  ", "&nbsp;&nbsp;");
+		
+		tempdto.setB_writer(b_writer);
+		
+		mav.addObject("var", tempdto);
+		
+		boolean result = boardDao.pwdcheck(dto);
+		
+		if(result) {
+			mav.setViewName("board/boardupdel");
+		} else {
+			mav.setViewName("board/boardview");
+			mav.addObject("message", "pwderror");
+		}
+		
+		return mav;
+	}
+	
+	@RequestMapping("boardupdate.do")
+	public String bupdatedo(@ModelAttribute BoardDTO dto) {
+		
+		boardDao.b_update(dto);
+		
+		return "redirect:/board/boardview.go?b_num=" + dto.getB_num();
+	}
+	
+	@RequestMapping("boarddelete.do")
+	public String bdeletedo(@ModelAttribute BoardDTO dto) {
+		
+		boardDao.b_delete(dto.getB_num());
+		
+		return "redirect:/";
+	}
+	
 	
 }
