@@ -48,19 +48,22 @@ function list(page, option, keyword){
 <thead>
 	<tr class="table-primary" style="width: 1000px;">
 		<th scope="col">번호</th>
-		<th scope="col">작성자</th>
 		<th scope="col" width="50%">제목</th>
+		<th scope="col">작성자</th>
 		<th scope="col">조회수</th>
 		<th scope="col">날짜</th>
 	</tr>
 </thead>
 <tbody>
+	<c:if test="${map.count == 0 }">
+			<th colspan="5">검색 결과가 없습니다.</th>
+	</c:if>
+	
 	<c:forEach var="list" items="${map.b_list }">
 	<!-- 일반글 -->
 		<c:if test="${list.b_show == 'Y' && list.b_secret == 'N'}">
 		<tr>
 			<th scope="row">${list.idx }</th>
-			<td>${list.b_writer }</td>
 			<td style="text-align: left;">
 				<a href="${path }/board/boardview.go?b_num=${list.b_num}">${list.b_subject } 
 					<c:if test="${list.c_count > 0 }">
@@ -68,10 +71,12 @@ function list(page, option, keyword){
 					</c:if>
 				</a>
 			</td>
+			<td>${list.b_writer }</td>
 			<td>${list.b_readcount }</td>
 			<td><fmt:formatDate value="${list.b_date }" pattern="yyyy-MM-dd hh:mm:ss E"/></td>
 		</tr>
 		</c:if>
+		
 	</c:forEach>
 </tbody>
 </table>

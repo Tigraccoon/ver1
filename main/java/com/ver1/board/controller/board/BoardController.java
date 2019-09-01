@@ -55,19 +55,21 @@ public class BoardController {
 		for(BoardDTO dto : b_list) {
 			String b_subject = dto.getB_subject();
 			
-			b_subject = b_subject.replace("<", "&lt;");
-			b_subject = b_subject.replace(">", "&gt;");
-			b_subject = b_subject.replace("\n", "<br>");
-			b_subject = b_subject.replace("  ", "&nbsp;&nbsp;");
+			b_subject = b_subject.replaceAll("&", "&amp;");
+			b_subject = b_subject.replaceAll("<", "&lt;");
+			b_subject = b_subject.replaceAll(">", "&gt;");
+			b_subject = b_subject.replaceAll("\n", "<br>");
+			b_subject = b_subject.replaceAll("  ", "&nbsp;&nbsp;");
 			
 			dto.setB_subject(b_subject);
 			
 			String b_writer = dto.getB_writer();
 			
-			b_writer = b_writer.replace("<", "&lt;");
-			b_writer = b_writer.replace(">", "&gt;");
-			b_writer = b_writer.replace("\n", "<br>");
-			b_writer = b_writer.replace("  ", "&nbsp;&nbsp;");
+			b_writer = b_writer.replaceAll("&", "&amp;");
+			b_writer = b_writer.replaceAll("<", "&lt;");
+			b_writer = b_writer.replaceAll(">", "&gt;");
+			b_writer = b_writer.replaceAll("\n", "<br>");
+			b_writer = b_writer.replaceAll("  ", "&nbsp;&nbsp;");
 			
 			dto.setB_writer(b_writer);
 		}
@@ -108,19 +110,21 @@ public class BoardController {
 		
 		String b_subject = dto.getB_subject();
 		
-		b_subject = b_subject.replace("<", "&lt;");
-		b_subject = b_subject.replace(">", "&gt;");
-		b_subject = b_subject.replace("\n", "<br>");
-		b_subject = b_subject.replace("  ", "&nbsp;&nbsp;");
+		b_subject = b_subject.replaceAll("&", "&amp;");
+		b_subject = b_subject.replaceAll("<", "&lt;");
+		b_subject = b_subject.replaceAll(">", "&gt;");
+		b_subject = b_subject.replaceAll("\n", "<br>");
+		b_subject = b_subject.replaceAll("  ", "&nbsp;&nbsp;");
 		
 		dto.setB_subject(b_subject);
 		
 		String b_writer = dto.getB_writer();
 		
-		b_writer = b_writer.replace("<", "&lt;");
-		b_writer = b_writer.replace(">", "&gt;");
-		b_writer = b_writer.replace("\n", "<br>");
-		b_writer = b_writer.replace("  ", "&nbsp;&nbsp;");
+		b_writer = b_writer.replaceAll("&", "&amp;");
+		b_writer = b_writer.replaceAll("<", "&lt;");
+		b_writer = b_writer.replaceAll(">", "&gt;");
+		b_writer = b_writer.replaceAll("\n", "<br>");
+		b_writer = b_writer.replaceAll("  ", "&nbsp;&nbsp;");
 		
 		dto.setB_writer(b_writer);
 		
@@ -142,33 +146,36 @@ public class BoardController {
 		
 		BoardDTO tempdto = boardDao.b_view(dto.getB_num(), session);
 		
-		String b_subject = tempdto.getB_subject();
-		
-		b_subject = b_subject.replace("<", "&lt;");
-		b_subject = b_subject.replace(">", "&gt;");
-		b_subject = b_subject.replace("\n", "<br>");
-		b_subject = b_subject.replace("  ", "&nbsp;&nbsp;");
-		
-		tempdto.setB_subject(b_subject);
-		
-		String b_writer = tempdto.getB_writer();
-		
-		b_writer = b_writer.replace("<", "&lt;");
-		b_writer = b_writer.replace(">", "&gt;");
-		b_writer = b_writer.replace("\n", "<br>");
-		b_writer = b_writer.replace("  ", "&nbsp;&nbsp;");
-		
-		tempdto.setB_writer(b_writer);
-		
-		mav.addObject("var", tempdto);
-		
 		boolean result = boardDao.pwdcheck(dto);
 		
 		if(result) {
+			mav.addObject("var", tempdto);
 			mav.setViewName("board/boardupdel");
 		} else {
-			mav.setViewName("board/boardview");
+			String b_subject = tempdto.getB_subject();
+			
+			b_subject = b_subject.replaceAll("&", "&amp;");
+			b_subject = b_subject.replaceAll("<", "&lt;");
+			b_subject = b_subject.replaceAll(">", "&gt;");
+			b_subject = b_subject.replaceAll("\n", "<br>");
+			b_subject = b_subject.replaceAll("  ", "&nbsp;&nbsp;");
+			
+			tempdto.setB_subject(b_subject);
+			
+			String b_writer = tempdto.getB_writer();
+			
+			b_writer = b_writer.replaceAll("&", "&amp;");
+			b_writer = b_writer.replaceAll("<", "&lt;");
+			b_writer = b_writer.replaceAll(">", "&gt;");
+			b_writer = b_writer.replaceAll("\n", "<br>");
+			b_writer = b_writer.replaceAll("  ", "&nbsp;&nbsp;");
+			
+			tempdto.setB_writer(b_writer);
+			
+			mav.addObject("var", tempdto);
 			mav.addObject("message", "pwderror");
+			
+			mav.setViewName("board/boardview");
 		}
 		
 		return mav;

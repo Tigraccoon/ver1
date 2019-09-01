@@ -33,7 +33,7 @@ $(document).ready(function() {
 
 		if(b_writer.val() == ""){	
 			alert("이름을 입력해주세요!");
-			b_writer.focus();	
+			b_writer.focus();
 			return;
 		}
 		if(b_pwd.val() == ""){	
@@ -57,6 +57,55 @@ $(document).ready(function() {
 	
 });
 
+function spacebarcheck(istherespacebar) {
+	
+	var text = istherespacebar.val();
+	
+	if(text.search(' ') != -1){
+		istherespacebar.val(text.replace(/ /gi, ''));
+		alert("공백은 입력할 수 없습니다.");
+	}
+	
+}
+
+function textlengthcheck(target, maxlength, str) {
+	
+	var value = target.val();
+	value = value.substring(0, maxlength);
+	
+	var valueleng = value.length;
+	target.val(value);
+	
+	if(valueleng > maxlength) {
+		str.css("color", "red");
+		
+		str.text('(' + valueleng + '/' + maxlength + ')')
+		
+	} else if(valueleng == maxlength) {
+		str.css("color", "red");
+		str.text('(' + valueleng + '/' + maxlength + ')')
+	} else {
+		str.css("color", "black");
+		str.text('(' + valueleng + '/' + maxlength + ')')
+	}
+	
+}
+
+function subjectcheck(subject) {
+	
+	var subjectstr = subject.val();
+	
+	while(subjectstr.startsWith(' ')){
+		subjectstr = subjectstr.substring(1);
+	}
+	
+	while(subjectstr.endsWith(' ')){
+		subjectstr = subjectstr.substring(0, subjectstr.length-1);
+	}
+	
+	subject.val(subjectstr);
+}
+
 </script>
 </head>
 <body>
@@ -68,33 +117,49 @@ $(document).ready(function() {
 <form action="${path}/board/boardwrite.do" method="post" id="writeform" name="writeform" >
 <table class="table table-borderless" style="width: 100%; text-align: center;">
 	<tr class="table-primary">
-		<th colspan="2"><h2>글쓰기</h2></th>
+		<th colspan="3"><h2>글쓰기</h2></th>
 	</tr>
 	<tr class="table-primary">
 		<th><label for="b_writer">작성자</label></th>
-		<td><input type="text" name="b_writer" id="b_writer" class="form-control" required="required" placeholder="이름을 입력하세요."></td>
+		<td>
+			<input type="text" name="b_writer" id="b_writer" class="form-control" required="required" 
+			placeholder="이름을 입력하세요." 
+			oninput="spacebarcheck($('#b_writer')); textlengthcheck($('#b_writer'), 15, $('#writernum'));">
+		</td>
+		<td width="5%" id="writernum">(0/15)</td>
 	</tr>
 	<tr class="table-primary">
 		<th><label for="b_pwd">비밀번호</label></th>
-		<td><input type="password" name="b_pwd" id="b_pwd" class="form-control" required="required" placeholder="비밀번호를 입력하세요."></td>
+		<td>
+			<input type="password" name="b_pwd" id="b_pwd" class="form-control" required="required" 
+			placeholder="비밀번호를 입력하세요." 
+			oninput="spacebarcheck($('#b_pwd')); textlengthcheck($('#b_pwd'), 20, $('#pwdnum'));">
+		</td>
+		<td width="5%" id="pwdnum">(0/20)</td>
 	</tr>
 	<tr class="table-primary">
 		<th><label for="b_subject">제목</label></th>
-		<td><input type="text" name="b_subject" id="b_subject" class="form-control" placeholder="제목을 입력하세요." required="required"></td>
+		<td>
+			<input type="text" name="b_subject" id="b_subject" class="form-control" required="required"
+			placeholder="제목을 입력하세요." 
+			oninput="textlengthcheck($('#b_subject'), 50, $('#subjectnum'));"
+			onfocusout="subjectcheck($('#b_subject')); textlengthcheck($('#b_subject'), 50, $('#subjectnum'));">
+		</td>
+		<td width="5%" id="subjectnum">(0/50)</td>
 	</tr>
 	<tr class="table-primary">
-		<th colspan="2"><label for="b_content">본문</label></th>
+		<th colspan="3"><label for="b_content">본문</label></th>
 	</tr>
 	<tr class="table-primary" style="text-align: left;">
-		<td colspan="2"><textarea name="b_content" id="b_content" class="form-control" required="required"></textarea></td>
+		<td colspan="3"><textarea name="b_content" id="b_content" class="form-control" required="required"></textarea></td>
 	</tr>
 	<tr class="table-primary">
-		<td colspan="2">
+		<td colspan="3">
 			<input type="button" value="글쓰기" class="btn btn-block btn-primary" id="dowrite">
 		</td>
 	</tr>
 	<tr class="table-primary">
-		<td colspan="2">
+		<td colspan="3">
 			<a href="${path }/board/boardlist.do" class="btn btn-info btn-block">리스트</a>
 		</td>
 	</tr>
@@ -105,7 +170,6 @@ $(document).ready(function() {
 	</div>
 </div>
 <br>
-
 
 </body>
 </html>
