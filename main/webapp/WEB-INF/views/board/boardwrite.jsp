@@ -24,12 +24,31 @@ $(document).ready(function() {
 		lang : 'ko-KR', 
 		callbacks: {
 			onKeyup: function(e) {
-	          	var txt = $("#b_content").val();
-				
+
 	          	
-	          	txt = txt.replace(/(<([^>]+)>)/gi, '');
-	          	alert(txt);
-				
+	          	var txt = e.currentTarget.innerText;
+	          	
+	          	//아래 코드 참고해서 에디터 내부의 입력값 제한할것
+	          	//e.currentTarget.innerText(txt.substring(0, 2000));
+	          	
+	          	var txtlength = txt.length;
+
+	          	var tstr = $("#contentnum");
+	          	if(txtlength > 2000) {
+	          		tstr.css("color", "red");
+	        		
+	          		tstr.text('(' + txtlength + '/' + 2000 + ')')
+	        		
+	        	} else if(txtlength == 2000) {
+	        		tstr.css("color", "red");
+	        		tstr.text('(' + txtlength + '/' + 2000 + ')')
+	        	} else {
+	        		tstr.css("color", "black");
+	        		tstr.text('(' + txtlength + '/' + 2000 + ')')
+	        	}
+	          	
+	          	//자동으로 삽입되는 태그를 일일히 지우려다 실패한 코드
+	          	//txt = txt.replace(/(<([^>]+)>)/gi, '');	<- 태그 지워주는 정규표현식
 				//(<([^>]+)>) 태그 선택 정규표현식
 	          }
 	        }
