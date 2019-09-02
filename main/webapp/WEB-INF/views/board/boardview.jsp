@@ -52,6 +52,17 @@ function textlengthcheck(target, maxlength, str) {
 	
 }
 
+function spacebarcheck(istherespacebar) {
+	
+	var text = istherespacebar.val();
+	
+	if(text.search(' ') != -1){
+		istherespacebar.val(text.replace(/ /gi, ''));
+		alert("공백은 입력할 수 없습니다.");
+	}
+	
+}
+
 </script>
 </head>
 <body>
@@ -108,7 +119,7 @@ function textlengthcheck(target, maxlength, str) {
 		<th width="30%"><label for="b_pwd">비밀번호</label></th>
 		<td width="65%">
 			<input name="b_pwd" id="b_pwd" class="form-control" type="password" 
-				oninput="textlengthcheck($('#b_pwd'), 20, $('#pwdnum'));">
+				oninput="spacebarcheck($('#b_pwd')); textlengthcheck($('#b_pwd'), 20, $('#pwdnum'));">
 			<br>
 			<input type="hidden" name="b_writer" id="b_writer" value="${var.b_writer }">
       		<input type="hidden" name="b_num" id="b_num" value="${var.b_num }">

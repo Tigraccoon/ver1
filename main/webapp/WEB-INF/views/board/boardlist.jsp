@@ -122,7 +122,7 @@ function list(page, option, keyword){
     </li>
 </c:if>
     
-<c:if test="${map.pager.curPage < map.pager.totPage}">
+<c:if test="${map.pager.curBlock < map.pager.totBlock}">
     <li class="page-item">
       <a class="page-link" href="#" aria-label="Next" onclick="list('${map.pager.totPage}', '${map.option }', '${map.keyword}')">
         <span aria-hidden="true">&raquo;</span><!-- 끝 -->
@@ -134,7 +134,7 @@ function list(page, option, keyword){
 <br>
 <a class="btn btn-block btn-primary" href="${path }/board/boardwrite.go">글쓰기</a>
 <br>
-
+<a href="${path }/board/boardlist.do" class="btn btn-info btn-block">리스트</a>
 		</div>
 	</div>
 </div>

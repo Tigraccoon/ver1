@@ -21,7 +21,18 @@ $(document).ready(function() {
 		height : 500, 
 	    minHeight : null,
 	    maxHeight : null,
-		lang : 'ko-KR'
+		lang : 'ko-KR', 
+		callbacks: {
+			onKeyup: function(e) {
+	          	var txt = $("#b_content").val();
+				
+	          	
+	          	txt = txt.replace(/(<([^>]+)>)/gi, '');
+	          	alert(txt);
+				
+				//(<([^>]+)>) 태그 선택 정규표현식
+	          }
+	        }
 	});
 	
 	$("#dowrite").click(function(){
@@ -62,14 +73,14 @@ function spacebarcheck(istherespacebar) {
 	var text = istherespacebar.val();
 	
 	if(text.search(' ') != -1){
-		istherespacebar.val(text.replace(/ /gi, ''));
+		istherespacebar.val(text.replace(/\s/gi, ''));
 		alert("공백은 입력할 수 없습니다.");
 	}
 	
 }
 
 function textlengthcheck(target, maxlength, str) {
-	
+
 	var value = target.val();
 	value = value.substring(0, maxlength);
 	
@@ -92,7 +103,7 @@ function textlengthcheck(target, maxlength, str) {
 }
 
 function subjectcheck(subject) {
-	
+	alert("sd");
 	var subjectstr = subject.val();
 	
 	while(subjectstr.startsWith(' ')){
@@ -105,6 +116,7 @@ function subjectcheck(subject) {
 	
 	subject.val(subjectstr);
 }
+
 
 </script>
 </head>
@@ -148,10 +160,14 @@ function subjectcheck(subject) {
 		<td width="5%" id="subjectnum">(0/50)</td>
 	</tr>
 	<tr class="table-primary">
-		<th colspan="3"><label for="b_content">본문</label></th>
+		<th colspan="2"><label for="b_content">본문</label></th>
+		<td width="5%" id="contentnum">(0/2000)</td>
 	</tr>
 	<tr class="table-primary" style="text-align: left;">
-		<td colspan="3"><textarea name="b_content" id="b_content" class="form-control" required="required"></textarea></td>
+		<td colspan="3">
+			<textarea name="b_content" id="b_content" class="form-control" required="required"
+			onkeyup="textlengthcheck($('#b_content'), 2000, $('#contentnum'));"></textarea>
+		</td>
 	</tr>
 	<tr class="table-primary">
 		<td colspan="3">
