@@ -28,7 +28,7 @@ function list(page, option, keyword){
 		<div class="col col-10">
 <br>
 
-<div class="col col-4 justify-content-end">
+<div class="col col-10 justify-content-end">
 
 <form class="form-inline my-2" method="post" action="${path }/board/boardlist.do">
 	<select class="form-control mr-sm-2" name="option">

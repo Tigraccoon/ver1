@@ -35,7 +35,7 @@ $(document).ready(function() {
 		}
 		var pt = /^.*(?=^.{6,20}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/gi;
 		if(!pt.test(b_pwd.val())){
-			alert("비밀번호는 영문, 숫자, 특수문자의 조합으로 입력되어야 합니다!");
+			alert("비밀번호는 영문, 숫자, 특수문자의 조합으로 6자 이상 입력되어야 합니다!");
 			b_pwd.focus();
 			return;
 		}
@@ -247,7 +247,8 @@ function subjectcheck(subject) {
 	<tr class="table-primary">
 		<th><label for="b_pwd">비밀번호</label></th>
 		<td>
-			<input type="password" name="b_pwd" id="b_pwd" class="form-control" required="required" placeholder="비밀번호를 입력하세요."
+			<input type="password" name="b_pwd" id="b_pwd" class="form-control" required="required" 
+			placeholder="비밀번호를 입력하세요. 영문, 숫자, 특수문자로 6자 이상 입력되어야 합니다." 
 			oninput="spacebarcheck($('#b_pwd')); pwdlengthcheck($('#b_pwd'), 20, $('#pwdnum'));">
 		</td>
 		<td width="5%" id="pwdnum">(0/20)</td>
