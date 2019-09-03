@@ -17,12 +17,8 @@
     
     <script type="text/javascript">
 $(document).ready(function() {
-	$('#b_content').summernote({
-		placeholder: '본문을 입력하세요.',
-		height : 500, 
-	    minHeight : null,
-	    maxHeight : null,
-		lang : 'ko-KR'
+	registerSummernote($('#b_content'), '본문을 입력하세요.', 2000, function(max) {
+	    $('#maxContentPost').text(max)
 	});
 	
 	$("#btnUpdate").click(function(){
@@ -35,6 +31,12 @@ $(document).ready(function() {
 		if(b_writer.val() == ""){	
 			alert("이름을 입력해주세요!");
 			b_writer.focus();	
+			return;
+		}
+		var pt = /^.*(?=^.{6,20}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/gi;
+		if(!pt.test(b_pwd.val())){
+			alert("비밀번호는 영문, 숫자, 특수문자의 조합으로 입력되어야 합니다!");
+			b_pwd.focus();
 			return;
 		}
 		if(b_pwd.val() == ""){	
@@ -70,6 +72,88 @@ $(document).ready(function() {
 	
 });
 
+function registerSummernote(element, placeholder, max, callbackMax) {
+    $(element).summernote({
+      height : 500,
+      lang : 'ko-KR',
+      placeholder,
+      callbacks: {
+        onKeydown: function(e) {
+          var t = e.currentTarget.innerHTML;
+            t = t.replace(/<br>/gi, '1');
+    		t = t.replace(/&nbsp;/gi, '1');
+    		t = t.replace(/&gt;/gi, '1');
+    		t = t.replace(/&lt;/gi, '1');
+      		t = t.replace(/(<([^>]+)>)/gi, '');
+          if (t.length >= max) {
+
+        	var key = e.keyCode;
+            var allowed_keys = [8, 37, 38, 39, 40, 46];
+            if ($.inArray(key, allowed_keys) == -1)
+              e.preventDefault();
+          }
+        },
+        onKeyup: function(e) {
+          var t = e.currentTarget.innerHTML;
+          	t = t.replace(/<br>/gi, '1');
+      		t = t.replace(/&nbsp;/gi, '1');
+      		t = t.replace(/&gt;/gi, '1');
+      		t = t.replace(/&lt;/gi, '1');
+      		t = t.replace(/(<([^>]+)>)/gi, '');
+          if (typeof callbackMax == 'function') {
+            callbackMax(max - t.length);
+          }
+        },
+        onPaste: function(e) {
+          var t = e.currentTarget.innerHTML;
+          	t = t.replace(/<br>/gi, '1');
+    		t = t.replace(/&nbsp;/gi, '1');
+    		t = t.replace(/&gt;/gi, '1');
+    		t = t.replace(/&lt;/gi, '1');
+    		t = t.replace(/(<([^>]+)>)/gi, '');
+    		
+          var bufferText = ((e.originalEvent || e).clipboardData || window.clipboardData).getData('Text');
+          e.preventDefault();
+          
+          if(t.length == 1){
+        	  document.execCommand('insertText', false, bufferText.substring(0, 2000));
+          } else if(t.length < 2000){
+        	  document.execCommand('insertText', false, bufferText.substring(0, (2000-t.length)));
+          } else {
+        	  return;
+          }
+
+          if (typeof callbackMax == 'function') {
+            callbackMax(max - t.length);
+          }
+        },
+        onChange: function(contents){
+        	var txt = contents;
+          	var maxleng = 2000;
+          	txt = txt.replace(/<br>/gi, '1');
+        	txt = txt.replace(/&nbsp;/gi, '1');
+        	txt = txt.replace(/&gt;/gi, '1');
+        	txt = txt.replace(/&lt;/gi, '1');
+        	txt = txt.replace(/(<([^>]+)>)/gi, '');
+          	var txtlength = txt.length;
+
+          	var tstr = $("#contentnum");
+          	
+          	if(txtlength >= maxleng){
+          		tstr.css("color", "red");
+        		tstr.text('(' + txtlength + '/' + maxleng + ')');
+          	} else if (txtlength == 0){
+          		tstr.css("color", "black");
+        		tstr.text('(' + txtlength + '/' + maxleng + ')');
+          	} else {
+          		tstr.css("color", "blue");
+        		tstr.text('(' + txtlength + '/' + maxleng + ')');
+          	}
+        }
+      }
+    });
+  }
+
 function spacebarcheck(istherespacebar) {
 	
 	var text = istherespacebar.val();
@@ -89,17 +173,37 @@ function textlengthcheck(target, maxlength, str) {
 	var valueleng = value.length;
 	target.val(value);
 	
-	if(valueleng > maxlength) {
+	if(valueleng >= maxlength) {
 		str.css("color", "red");
-		
-		str.text('(' + valueleng + '/' + maxlength + ')')
-		
-	} else if(valueleng == maxlength) {
-		str.css("color", "red");
-		str.text('(' + valueleng + '/' + maxlength + ')')
-	} else {
+		str.text('(' + valueleng + '/' + maxlength + ')');
+	} else if(valueleng == 0){
 		str.css("color", "black");
-		str.text('(' + valueleng + '/' + maxlength + ')')
+		str.text('(' + valueleng + '/' + maxlength + ')');
+	} else {
+		str.css("color", "blue");
+		str.text('(' + valueleng + '/' + maxlength + ')');
+	}
+	
+}
+function pwdlengthcheck(target, maxlength, str) {
+
+	var value = target.val();
+	value = value.substring(0, maxlength);
+	
+	var valueleng = value.length;
+	target.val(value);
+	
+	var pt = /^.*(?=^.{6,20}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/gi;
+	
+	if(!pt.test(value)){
+		str.css("color", "red");
+		str.text('(' + valueleng + '/' + maxlength + ')');
+	} else if(valueleng == 0){
+		str.css("color", "black");
+		str.text('(' + valueleng + '/' + maxlength + ')');
+	} else {
+		str.css("color", "blue");
+		str.text('(' + valueleng + '/' + maxlength + ')');
 	}
 	
 }
@@ -144,7 +248,7 @@ function subjectcheck(subject) {
 		<th><label for="b_pwd">비밀번호</label></th>
 		<td>
 			<input type="password" name="b_pwd" id="b_pwd" class="form-control" required="required" placeholder="비밀번호를 입력하세요."
-			oninput="spacebarcheck($('#b_pwd')); textlengthcheck($('#b_pwd'), 20, $('#pwdnum'));">
+			oninput="spacebarcheck($('#b_pwd')); pwdlengthcheck($('#b_pwd'), 20, $('#pwdnum'));">
 		</td>
 		<td width="5%" id="pwdnum">(0/20)</td>
 	</tr>
@@ -158,7 +262,8 @@ function subjectcheck(subject) {
 		<td width="5%" id="subjectnum">(0/50)</td>
 	</tr>
 	<tr class="table-primary">
-		<th colspan="3"><label for="b_content">본문</label></th>
+		<th colspan="2"><label for="b_content">본문</label></th>
+		<td width="5%" id="contentnum">(0/2000)</td>
 	</tr>
 	<tr class="table-primary" style="text-align: left;">
 		<td colspan="3"><textarea name="b_content" id="b_content" class="form-control" required="required">${var.b_content }</textarea></td>
