@@ -173,6 +173,7 @@ public class BoardController {
 			tempdto.setB_writer(b_writer);
 			
 			mav.addObject("var", tempdto);
+			//mav.addObject("pwd", dto.getB_pwd());
 			mav.addObject("message", "pwderror");
 			
 			mav.setViewName("board/boardview");

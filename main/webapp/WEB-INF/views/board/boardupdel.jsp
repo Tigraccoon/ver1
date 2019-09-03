@@ -75,6 +75,7 @@ $(document).ready(function() {
 function registerSummernote(element, placeholder, max, callbackMax) {
     $(element).summernote({
       height : 500,
+      width : $("#writetable").width(),
       lang : 'ko-KR',
       placeholder,
       callbacks: {
@@ -247,8 +248,8 @@ function subjectcheck(subject) {
 	<tr class="table-primary">
 		<th><label for="b_pwd">비밀번호</label></th>
 		<td>
-			<input type="password" name="b_pwd" id="b_pwd" class="form-control" required="required" 
-			placeholder="비밀번호를 입력하세요. 영문, 숫자, 특수문자로 6자 이상 입력되어야 합니다." 
+			<input type="password" name="b_pwd" id="b_pwd" class="form-control" required="required"
+			value="${var.b_pwd }" placeholder="비밀번호를 입력하세요. 영문, 숫자, 특수문자로 6자 이상 입력되어야 합니다." 
 			oninput="spacebarcheck($('#b_pwd')); pwdlengthcheck($('#b_pwd'), 20, $('#pwdnum'));">
 		</td>
 		<td width="5%" id="pwdnum">(0/20)</td>

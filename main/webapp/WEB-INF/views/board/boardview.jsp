@@ -14,6 +14,7 @@ $(function(){
 	
 	if(errorcheck == 'pwderror'){
 		alert('비밀번호 오류입니다. 다시 확인해주세요.');
+		$("#boardupdate").modal('show');
 	}
 });
 
@@ -118,7 +119,7 @@ function spacebarcheck(istherespacebar) {
 	<tr class="table-success">
 		<th width="30%"><label for="b_pwd">비밀번호</label></th>
 		<td width="65%">
-			<input name="b_pwd" id="b_pwd" class="form-control" type="password" 
+			<input name="b_pwd" id="b_pwd" class="form-control" type="password" value="${pwd }"
 				oninput="spacebarcheck($('#b_pwd')); textlengthcheck($('#b_pwd'), 20, $('#pwdnum'));">
 			<br>
 			<input type="hidden" name="b_writer" id="b_writer" value="${var.b_writer }">

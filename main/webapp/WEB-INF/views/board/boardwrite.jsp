@@ -19,7 +19,6 @@ $(document).ready(function() {
 	registerSummernote($('#b_content'), '본문을 입력하세요.', 2000, function(max) {
 	    $('#maxContentPost').text(max)
 	});
-	
 	$("#dowrite").click(function(){
 		
 		var b_writer = $("#b_writer");
@@ -30,13 +29,6 @@ $(document).ready(function() {
 		if(b_writer.val() == ""){	
 			alert("이름을 입력해주세요!");
 			b_writer.focus();
-			return;
-		}
-		
-		var pt = /^.*(?=^.{6,20}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/gi;
-		if(!pt.test(b_pwd.val())){
-			alert("비밀번호는 영문, 숫자, 특수문자의 조합으로 6자 이상 입력되어야 합니다!");
-			b_pwd.focus();
 			return;
 		}
 		
@@ -64,6 +56,7 @@ $(document).ready(function() {
 function registerSummernote(element, placeholder, max, callbackMax) {
     $(element).summernote({
       height : 500,
+      width : $("#writetable").width(),
       lang : 'ko-KR',
       placeholder,
       callbacks: {
@@ -214,6 +207,19 @@ function subjectcheck(subject) {
 	subject.val(subjectstr);
 }
 
+function pwdcheck(target){
+	var pt = /^.*(?=^.{6,20}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/gi;
+	var val = target.val();
+
+	if(!pt.test(val)){
+		alert("비밀번호는 영문, 숫자, 특수문자의 조합으로 6자 이상 입력되어야 합니다!");
+		setTimeout(function(){
+		target.focus();
+		}, 10);
+		return;
+	}
+}
+
 </script>
 </head>
 <body>
@@ -223,7 +229,7 @@ function subjectcheck(subject) {
 		<div class="col col-10">
 <br>
 <form action="${path}/board/boardwrite.do" method="post" id="writeform" name="writeform" >
-<table class="table table-borderless" style="width: 100%; text-align: center;">
+<table class="table table-borderless" style="width: 100%; text-align: center;" id="writetable">
 	<tr class="table-primary">
 		<th colspan="3"><h2>글쓰기</h2></th>
 	</tr>
@@ -234,16 +240,17 @@ function subjectcheck(subject) {
 			placeholder="이름을 입력하세요." 
 			oninput="spacebarcheck($('#b_writer')); textlengthcheck($('#b_writer'), 15, $('#writernum'));">
 		</td>
-		<td width="5%" id="writernum">(0/15)</td>
+		<td width="150px" id="writernum">(0/15)</td>
 	</tr>
 	<tr class="table-primary">
 		<th><label for="b_pwd">비밀번호</label></th>
 		<td>
 			<input type="password" name="b_pwd" id="b_pwd" class="form-control" required="required" 
 			placeholder="비밀번호를 입력하세요. 영문, 숫자, 특수문자로 6자 이상 입력되어야 합니다." 
-			oninput="spacebarcheck($('#b_pwd')); pwdlengthcheck($('#b_pwd'), 20, $('#pwdnum'));">
+			oninput="spacebarcheck($('#b_pwd')); pwdlengthcheck($('#b_pwd'), 20, $('#pwdnum'));"
+			onblur="pwdcheck($('#b_pwd'));">
 		</td>
-		<td width="5%" id="pwdnum">(0/20)</td>
+		<td width="150px" id="pwdnum">(0/20)</td>
 	</tr>
 	<tr class="table-primary">
 		<th><label for="b_subject">제목</label></th>
@@ -251,18 +258,17 @@ function subjectcheck(subject) {
 			<input type="text" name="b_subject" id="b_subject" class="form-control" required="required"
 			placeholder="제목을 입력하세요." 
 			oninput="textlengthcheck($('#b_subject'), 50, $('#subjectnum'));"
-			onfocusout="subjectcheck($('#b_subject')); textlengthcheck($('#b_subject'), 50, $('#subjectnum'));">
+			onblur="subjectcheck($('#b_subject')); textlengthcheck($('#b_subject'), 50, $('#subjectnum'));">
 		</td>
-		<td width="5%" id="subjectnum">(0/50)</td>
+		<td width="150px" id="subjectnum">(0/50)</td>
 	</tr>
 	<tr class="table-primary">
 		<th colspan="2"><label for="b_content">본문</label></th>
-		<td width="5%" id="contentnum">(0/2000)</td>
+		<td width="150px" id="contentnum">(0/2000)</td>
 	</tr>
 	<tr class="table-primary" style="text-align: left;">
 		<td colspan="3">
-			<textarea name="b_content" id="b_content" class="form-control" required="required"
-			maxlength="10"></textarea>
+			<textarea name="b_content" id="b_content" class="form-control" required="required"></textarea>
 		</td>
 	</tr>
 	<tr class="table-primary">

@@ -42,45 +42,46 @@ function list(page, option, keyword){
 	
 </div>
 <br>
-
-<table class="table table-bordered" style="text-align: center;">
+<div class="table-responsive-xl">
+<table class="table table-bordered" style="text-align: center; table-layout:fixed;">
 <caption style="text-align: right; caption-side: top;"><strong>${map.count }</strong>&nbsp;개의 글이 있습니다.</caption>
 <thead>
-	<tr class="table-primary" style="width: 1000px;">
-		<th scope="col">번호</th>
-		<th scope="col" width="50%">제목</th>
-		<th scope="col">작성자</th>
-		<th scope="col">조회수</th>
-		<th scope="col">날짜</th>
+	<tr class="table-primary">
+		<th scope="col" style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">번호</th>
+		<th scope="col" width="50%" style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">제목</th>
+		<th scope="col" style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">작성자</th>
+		<th scope="col" style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">조회수</th>
+		<th scope="col" style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">날짜</th>
 	</tr>
 </thead>
 <tbody>
 	<c:if test="${map.count == 0 }">
-			<th colspan="5">검색 결과가 없습니다.</th>
+			<th colspan="5" style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">검색 결과가 없습니다.</th>
 	</c:if>
 	
 	<c:forEach var="list" items="${map.b_list }">
 	<!-- 일반글 -->
 		<c:if test="${list.b_show == 'Y' && list.b_secret == 'N'}">
 		<tr>
-			<th scope="row">${list.idx }</th>
-			<td style="text-align: left;">
-				<a href="${path }/board/boardview.go?b_num=${list.b_num}">${list.b_subject } 
+			<th scope="row" style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">${list.idx }</th>
+			<td style="text-align: left;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">
+				<a href="${path }/board/boardview.go?b_num=${list.b_num}" title="${list.b_subject }">
+				${list.b_subject }
 					<c:if test="${list.c_count > 0 }">
 						<label style="color: black">(${list.c_count })</label>
 					</c:if>
 				</a>
 			</td>
-			<td>${list.b_writer }</td>
-			<td>${list.b_readcount }</td>
-			<td><fmt:formatDate value="${list.b_date }" pattern="yyyy-MM-dd hh:mm:ss E"/></td>
+			<td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">${list.b_writer }</td>
+			<td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">${list.b_readcount }</td>
+			<td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;"><fmt:formatDate value="${list.b_date }" pattern="yyyy-MM-dd hh:mm:ss E"/></td>
 		</tr>
 		</c:if>
 		
 	</c:forEach>
 </tbody>
 </table>
-
+</div>
 
 <!-- 페이징 -->
 <br><br>

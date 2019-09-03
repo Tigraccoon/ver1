@@ -9,7 +9,7 @@
 
 <script src="${path}/include/js/jquery-3.3.1.min.js"></script>
 <script src="${path}/include/js/bootstrap.min.js"></script>
-
+<script src="${path}/include/js/bootstrap.bundle.min.js"></script>
 
 <meta charset="utf-8">
 
