@@ -27,25 +27,27 @@ public class Pager {
 		setTotBlock(); // 전체 블록 갯수 계산
 		setBlockRange(); //블록의 시작,끝 번호 계산
 	}
-	//전체 페이지 갯수 계산
 	public void setTotPage(int count) {
-	// Math.ceil() 올림		
+		//전체 페이지 갯수 계산
+		//Math.ceil() 올림		
+		//전체 페이지 = (정수형반환)올림((게시물수*1.0) / 10)
+		//1.0곱하는 이유는 올림 처리를 해야하는데 소숫점 이하의 수가 있어야 정상적으로 올림이 되기 때문에
 		totPage = (int)Math.ceil(count*1.0 / PAGE_SCALE);
 	}
-	
-	// where rn between #{start} and #{end}에 입력될 값		
 	public void setPageRange() {
+		//페이지 범위 계산
+		// where rn between #{start} and #{end}에 입력될 값		
 		// 시작번호=(현재페이지-1)x페이지당 게시물수 + 1
+		// cp-1을 하는 이유는 실제 페이지에 보여지는 개시물의 번호가 페이지 단위 번호보다 1 작기 떄문에
+		// 컴퓨터와 사람의 계산식이 달라서 컴퓨터의 계산식에 맞추기 위해
 		// 끝번호=시작번호 + 페이지당 게시물수 - 1		
 		pageBegin = (curPage-1) * PAGE_SCALE + 1;
 		pageEnd = pageBegin + PAGE_SCALE - 1;
 	}
-	
 	//블록의 갯수 계산
 	public void setTotBlock() {
 		totBlock = (int)Math.ceil(totPage*1.0 / BLOCK_SCALE);
 	}
-	
 	public void setBlockRange() {
 		//원하는 페이지가 몇번째 블록에 속하는지 계산
 		curBlock=(curPage-1)/BLOCK_SCALE + 1;
@@ -65,7 +67,6 @@ public class Pager {
 			nextPage=totPage;
 		}
 	}
-	
 	public int getCurPage() {
 		return curPage;
 	}
