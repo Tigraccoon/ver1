@@ -6,6 +6,7 @@
 
 	<typeAliases>
 		<typeAlias type="com.ver1.board.model.board.dto.BoardDTO" alias="BoardDTO"/>
+		<typeAlias type="com.ver1.board.model.board.dto.CommentDTO" alias="CommentDTO"/>
 	</typeAliases>
 	
 </configuration>

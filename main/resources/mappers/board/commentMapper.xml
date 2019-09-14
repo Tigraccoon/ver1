@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 다른 mapper와 중복되지 않도록 네임스페이스 기재 -->
+<mapper namespace="comment">
+<!-- select -->
+	<!-- 댓글 리스트 -->
+	<select id="c_list" resultType="CommentDTO">
+		SELECT * FROM board_comment 
+			WHERE b_num=#{b_num}
+            ORDER BY c_num ASC
+	</select>
+	
+<!-- /select -->
+	
+<!-- insert -->
+	<!-- 댓글쓰기 -->
+	<insert id="c_insert">
+		INSERT INTO board_comment(c_num, b_num, c_writer, c_content, c_pwd)
+			VALUES(seq_comment.nextval, #{b_num}, #{c_writer}, #{c_content}, #{c_pwd})
+	</insert>
+	
+<!-- /insert -->
+	
+<!-- update -->
+	<!-- 댓글수정 -->
+	<update id="c_update">
+		UPDATE board_comment 
+			SET c_writer=#{c_writer}, c_content=#{c_content}, c_pwd=#{c_pwd}
+			WHERE c_num=#{c_num}
+	</update>
+	
+<!-- /update -->
+	
+<!-- delete -->
+	<!-- 댓글삭제 -->
+	<update id="c_delete">
+		UPDATE board_comment SET c_show='N' 
+			WHERE c_num=#{c_num}
+	</update>
+	
+<!-- /delete -->
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -81,9 +81,10 @@ drop table board_comment;
 
 create table board_comment (
 c_num number not null primary key, --댓글 일련번호 
-b_num number not null references board(b_num),
-c_writer varchar2(50) not null,
-c_content clob not null, 
+b_num number not null,
+c_writer varchar2(60) not null,
+c_pwd varchar2(50) not null,
+c_content varchar2(800) not null, 
 c_date date default sysdate,
 c_show char(1) default 'Y',    --댓글 출력 여부
 c_secret char(1) default 'N'

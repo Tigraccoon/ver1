@@ -16,7 +16,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.ver1.board.model.board.Pager;
 import com.ver1.board.model.board.dao.BoardDAO;
+import com.ver1.board.model.board.dao.CommentDAO;
 import com.ver1.board.model.board.dto.BoardDTO;
+import com.ver1.board.model.board.dto.CommentDTO;
 
 @Controller
 @RequestMapping("board/*")
@@ -24,6 +26,8 @@ public class BoardController {
 
 	@Inject
 	BoardDAO boardDao;
+	@Inject
+	CommentDAO commentDao;
 	
 	@RequestMapping("boardlist.do")
 	public ModelAndView list(@RequestParam(defaultValue="1") int curPage,
@@ -133,9 +137,9 @@ public class BoardController {
 		int c_count = boardDao.c_count(b_num);
 		mav.addObject("c_count", c_count);
 		
-		/*
-		 * if(c_count > 0) { mav.addObject("war", commentService.c_list(b_num)); }
-		 */
+		
+		if(c_count > 0) { mav.addObject("war", commentDao.c_list(b_num)); }
+		
 		
 		return mav;
 	}
@@ -196,6 +200,29 @@ public class BoardController {
 		boardDao.b_delete(dto.getB_num());
 		
 		return "redirect:/";
+	}
+	
+	@RequestMapping("c_insert.do")
+	public String commentinsertdo(@ModelAttribute CommentDTO dto) {
+		
+		commentDao.c_insert(dto);
+		
+		return "redirect:/board/boardview.go?b_num="+dto.getB_num();
+	}
+	
+	@RequestMapping("c_update.do")
+	public String commentupdatedo(@ModelAttribute CommentDTO dto) {
+		
+		commentDao.c_update(dto);
+		
+		return "redirect:/board/boardview.go?b_num="+dto.getB_num();
+	}
+	
+	@RequestMapping("c_delete.do")
+	public String commentdeletedo(@RequestParam int c_num, @RequestParam int b_num) {
+		commentDao.c_delete(c_num);
+		
+		return "redirect:/board/boardview.go?b_num="+b_num;
 	}
 	
 	
