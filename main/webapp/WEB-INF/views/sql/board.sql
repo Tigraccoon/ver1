@@ -60,6 +60,8 @@ drop table board;
 
 create table board (
 b_num number not null primary key, --게시물번호 
+b_unum number default null,
+b_gnum number default 0,
 b_writer varchar2(60) not null, --작성자
 b_pwd varchar2(70) not null,
 b_subject varchar2(170) not null, --제목
@@ -101,10 +103,10 @@ declare --선언부
     i number := 1;
 begin --실행부
     while i<=250 loop
-        insert into board (b_num,b_subject,b_content,b_writer, b_pwd)
+        insert into board (b_num,b_subject,b_content,b_writer, b_pwd, b_gnum)
         values
         ( seq_b.nextval
-        ,'제목'||i, '내용'||i, 'kim', '1234');
+        ,'제목'||i, '내용'||i, 'kim', '1234', 0);
         i := i+1; --조건 변경
     end loop;
 end;
@@ -116,21 +118,57 @@ select * from board order by b_num desc;
 
 select count(*) from board where b_num=214 and b_writer='123123' and b_pwd='1234';
 
+select LEVEL, b_num,b_unum, b_gnum,b_writer,LPAD(' ', 4*(LEVEL-1)) || CASE WHEN (LEVEL -1) > 0 THEN 'ㄴ' END || b_subject as b_subject
+                    ,b_date,b_readcount,b_show,b_secret --,ROW_NUMBER() OVER(ORDER BY b_num ASC) as idx
+	  				,(select count(*) from board_comment c where c.b_num=b.b_num and c_show='Y') c_count
+from board b
+START WITH b_unum IS NULL
+                    CONNECT BY PRIOR b_num = b_unum  
+					ORDER SIBLINGS BY b_gnum ASC, b_num DESC;
+                    
+insert into board(b_num, b_unum, b_gnum, b_writer, b_pwd, b_subject, b_content) values(251, 250, 1, '작성자', '제목', '1234', '내용');
+insert into board(b_num, b_unum, b_gnum, b_writer, b_pwd, b_subject, b_content) values(252, 251, 2, '작성자', '제목', '1234', '내용');
+insert into board(b_num, b_unum, b_gnum, b_writer, b_pwd, b_subject, b_content) values(253, 250, 3, '작성자', '제목', '1234', '내용');
+
 SELECT * FROM (
 			SELECT rownum AS rn,
 			A.* FROM (
-				SELECT b_num,b_writer,b_subject,b_date,b_readcount,b_show,b_secret ,ROW_NUMBER() OVER(ORDER BY b_num ASC) as idx
+                SELECT LPAD(' ', 4*(LEVEL-1)) || CASE WHEN (LEVEL -1) > 0 THEN 'ㄴ' END || b_subject as b_subject, B.*
+                    FROM (
+                            SELECT LEVEL, b_num,b_unum, b_gnum, b_writer,b_subject,b_date,b_readcount,b_show,b_secret --,ROW_NUMBER() OVER(ORDER BY b_num ASC) as idx
+                                ,(select count(*) from board_comment c where c.b_num=b.b_num and c_show='Y') c_count					
+                                FROM board b
+                                WHERE b.b_show='Y' AND b.b_writer LIKE '%'
+                                START WITH b_unum IS NULL
+                                CONNECT BY PRIOR b_num = b_unum  
+                                
+                        ) B
+                    START WITH b_unum IS NULL
+                            CONNECT BY PRIOR b_num = b_unum  
+                    ORDER SIBLINGS BY b_gnum DESC
+                ) A
+		) WHERE rn BETWEEN 1 AND 10;
+        
+SELECT * FROM (
+			SELECT rownum AS rn,
+			A.* FROM (
+				SELECT b_num,b_unum, b_gnum,b_writer,LPAD(' ', 4*(LEVEL-1)) || CASE WHEN (LEVEL -1) > 0 THEN 'ㄴ' END || b_subject as b_subject
+                    ,b_date,b_readcount,b_show,b_secret --, (select ROW_NUMBER() OVER(ORDER BY h.b_num ASC) as idx from board h)
 	  				,(select count(*) from board_comment c where c.b_num=b.b_num and c_show='Y') c_count					
 					FROM board b
 					WHERE b.b_show='Y' AND b.b_writer LIKE '%'
-					ORDER BY b_num DESC 
+                    START WITH b_unum IS NULL
+                    CONNECT BY PRIOR b_num = b_unum  
+					ORDER SIBLINGS BY b_gnum ASC, b_num DESC
 					) A
-		) WHERE rn BETWEEN 1 AND 10;
+		);-- WHERE rn BETWEEN 1 AND 10;
+        
         
 select * from board order by b_num desc;
 
+commit;
 
-delete from board where b_num=221;
+delete from board where b_num=245;
 
 
 create index b_num_idx on board(b_num, b_writer);
