@@ -16,16 +16,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<!-- 글 리스트 -->
 	<select id="b_list" resultType="BoardDTO">
 		SELECT * FROM (
-			SELECT rownum AS rn, 
+			SELECT rownum AS rn, ROW_NUMBER() OVER(ORDER BY rownum DESC) as idx,
 			A.* FROM (
-				SELECT b_num,b_writer,b_subject,b_date,b_readcount,b_show,b_secret
-					,ROW_NUMBER() OVER(ORDER BY b_num ASC) as idx
-	  				,(select count(*) from board_comment c where c.b_num=b.b_num and c_show='Y') c_count 					
+				SELECT level, b_num,b_unum, b_gnum,b_writer
+					,LPAD(' ', 4*(LEVEL-1)) || CASE WHEN (LEVEL -1) > 0 THEN 'ㄴ' END || b_subject as b_subject
+                    , b_pwd ,b_date,b_readcount,b_show,b_secret 
+	  				,(select count(*) from board_comment c where c.b_num=b.b_num and c_show='Y') c_count
 					FROM board b
 					<include refid="search" />
-					ORDER BY b_num DESC 
+					START WITH b_unum IS NULL
+                    CONNECT BY PRIOR b_num = b_unum  
+					ORDER SIBLINGS BY b_gnum ASC, b_num DESC 
 					) A
 		) WHERE rn BETWEEN #{begin} AND #{end}
+		ORDER BY rn ASC
 	</select>
 	
 	<!-- 글보기 -->
@@ -59,6 +63,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		INSERT INTO board 
 			(b_num, b_writer, b_pwd, b_subject, b_content) 
 			VALUES(seq_b.nextval, #{b_writer}, #{b_pwd}, #{b_subject}, #{b_content})
+	</insert>
+	
+	<!-- 답글쓰기 -->
+	<insert id="b_reinsert">
+		INSERT INTO board
+			(b_num, b_unum, b_gnum, b_writer, b_pwd, b_subject, b_content) 
+			VALUES(seq_b.nextval, #{b_unum}, #{b_gnum}, #{b_writer}, #{b_pwd}, #{b_subject}, #{b_content})
 	</insert>
 	
 <!-- /insert -->

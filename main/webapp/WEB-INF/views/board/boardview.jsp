@@ -140,7 +140,9 @@ function pwdlengthcheck(target, maxlength, str) {
 			<button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#boardupdate">
   				수정
 			</button><br>
+			<a href="${path }/board/boardreple.go" class="btn btn-success btn-block">답글달기</a>
 			<a href="${path }/board/boardlist.do" class="btn btn-info btn-block">리스트</a>
+			
 		</td>
 	</tr>
 </table>

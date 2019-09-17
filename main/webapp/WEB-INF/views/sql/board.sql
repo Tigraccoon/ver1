@@ -60,10 +60,10 @@ drop table board;
 
 create table board (
 b_num number not null primary key, --게시물번호 
-b_unum number default null,
-b_gnum number default 0,
+b_unum number default null,         --부모 번호
+b_gnum number default 0,            --게시물 그룹 내부 순서
 b_writer varchar2(60) not null, --작성자
-b_pwd varchar2(70) not null,
+b_pwd varchar2(70) not null,    --비밀번호
 b_subject varchar2(170) not null, --제목
 b_content clob not null, --본문
 b_readcount number default 0,	--조회수
@@ -127,48 +127,30 @@ START WITH b_unum IS NULL
 					ORDER SIBLINGS BY b_gnum ASC, b_num DESC;
                     
 insert into board(b_num, b_unum, b_gnum, b_writer, b_pwd, b_subject, b_content) values(251, 250, 1, '작성자', '제목', '1234', '내용');
-insert into board(b_num, b_unum, b_gnum, b_writer, b_pwd, b_subject, b_content) values(252, 251, 2, '작성자', '제목', '1234', '내용');
-insert into board(b_num, b_unum, b_gnum, b_writer, b_pwd, b_subject, b_content) values(253, 250, 3, '작성자', '제목', '1234', '내용');
+insert into board(b_num, b_unum, b_gnum, b_writer, b_pwd, b_subject, b_content) values(252, 251, 1, '작성자', '제목', '1234', '내용');
+insert into board(b_num, b_unum, b_gnum, b_writer, b_pwd, b_subject, b_content) values(253, 250, 2, '작성자', '제목', '1234', '내용');
+
 
 SELECT * FROM (
-			SELECT rownum AS rn,
+			SELECT rownum AS rn, ROW_NUMBER() OVER(ORDER BY rownum DESC) as idx,
 			A.* FROM (
-                SELECT LPAD(' ', 4*(LEVEL-1)) || CASE WHEN (LEVEL -1) > 0 THEN 'ㄴ' END || b_subject as b_subject, B.*
-                    FROM (
-                            SELECT LEVEL, b_num,b_unum, b_gnum, b_writer,b_subject,b_date,b_readcount,b_show,b_secret --,ROW_NUMBER() OVER(ORDER BY b_num ASC) as idx
-                                ,(select count(*) from board_comment c where c.b_num=b.b_num and c_show='Y') c_count					
-                                FROM board b
-                                WHERE b.b_show='Y' AND b.b_writer LIKE '%'
-                                START WITH b_unum IS NULL
-                                CONNECT BY PRIOR b_num = b_unum  
-                                
-                        ) B
-                    START WITH b_unum IS NULL
-                            CONNECT BY PRIOR b_num = b_unum  
-                    ORDER SIBLINGS BY b_gnum DESC
-                ) A
-		) WHERE rn BETWEEN 1 AND 10;
-        
-SELECT * FROM (
-			SELECT rownum AS rn,
-			A.* FROM (
-				SELECT b_num,b_unum, b_gnum,b_writer,LPAD(' ', 4*(LEVEL-1)) || CASE WHEN (LEVEL -1) > 0 THEN 'ㄴ' END || b_subject as b_subject
-                    ,b_date,b_readcount,b_show,b_secret --, (select ROW_NUMBER() OVER(ORDER BY h.b_num ASC) as idx from board h)
-	  				,(select count(*) from board_comment c where c.b_num=b.b_num and c_show='Y') c_count					
+				SELECT level, b_num,b_unum, b_gnum,b_writer,LPAD(' ', 4*(LEVEL-1)) || CASE WHEN (LEVEL -1) > 0 THEN 'ㄴ' END || b_subject as b_subject
+                    , b_pwd ,b_date,b_readcount,b_show,b_secret 
+	  				,(select count(*) from board_comment c where c.b_num=b.b_num and c_show='Y') c_count
 					FROM board b
 					WHERE b.b_show='Y' AND b.b_writer LIKE '%'
                     START WITH b_unum IS NULL
                     CONNECT BY PRIOR b_num = b_unum  
 					ORDER SIBLINGS BY b_gnum ASC, b_num DESC
 					) A
-		);-- WHERE rn BETWEEN 1 AND 10;
+		) WHERE rn BETWEEN 1 AND 10 order by rn ASC; 
         
         
 select * from board order by b_num desc;
 
 commit;
 
-delete from board where b_num=245;
+delete from board where b_num=253;
 
 
 create index b_num_idx on board(b_num, b_writer);
