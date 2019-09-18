@@ -63,9 +63,26 @@ public class BoardDAOImpl implements BoardDAO {
 	}
 
 	@Override
-	public void b_delete(int b_num) {
+	@Transactional
+	public void b_delete(int b_num, int b_mnum) {
 		
 		sqlSession.delete("board.b_delete", b_num);
+		
+		Map<String, Object> map = new HashMap<>();
+		map.put("b_num", b_num);
+		map.put("b_mnum", b_mnum);
+		
+		List<String> list = sqlSession.selectList("board.showcheck", map);
+		
+		boolean result = false;
+		
+		if(list.indexOf("Y") == -1) result = true; 
+
+		if(result) {
+			sqlSession.delete("b_deleteall", map);
+		}
+		
+		
 	}
 
 	@Override
@@ -101,6 +118,23 @@ public class BoardDAOImpl implements BoardDAO {
 			return false;
 		}
 		
+	}
+
+	@Override
+	public BoardDTO b_getupperinfo(int b_num) {
+		
+		BoardDTO dto = sqlSession.selectOne("board.upperinfo", b_num);
+		
+		return dto;
+	}
+
+	@Override
+	@Transactional
+	public int b_reinsert(BoardDTO dto) {
+		
+		sqlSession.insert("board.b_reinsert", dto);
+		
+		return sqlSession.selectOne("board.getcurrval");
 	}
 
 }

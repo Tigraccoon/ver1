@@ -138,9 +138,10 @@ function pwdlengthcheck(target, maxlength, str) {
 	<tr class="table-primary" style="text-align: center;">
 		<td colspan="4">
 			<button type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#boardupdate">
-  				수정
+  				수정/삭제
 			</button><br>
-			<a href="${path }/board/boardreple.go" class="btn btn-success btn-block">답글달기</a>
+			<a href="${path }/board/boardreple.go?b_num=${var.b_num}" class="btn btn-success btn-block">답글달기</a>
+			<br>
 			<a href="${path }/board/boardlist.do" class="btn btn-info btn-block">리스트</a>
 			
 		</td>

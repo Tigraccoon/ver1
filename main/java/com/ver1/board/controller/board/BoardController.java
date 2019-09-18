@@ -197,8 +197,8 @@ public class BoardController {
 	@RequestMapping("boarddelete.do")
 	public String bdeletedo(@ModelAttribute BoardDTO dto) {
 		
-		boardDao.b_delete(dto.getB_num());
-		
+		boardDao.b_delete(dto.getB_num(), dto.getB_mnum());
+
 		return "redirect:/";
 	}
 	
@@ -221,6 +221,25 @@ public class BoardController {
 	@RequestMapping("c_delete.do")
 	public String commentdeletedo(@RequestParam int c_num, @RequestParam int b_num) {
 		commentDao.c_delete(c_num);
+		
+		return "redirect:/board/boardview.go?b_num="+b_num;
+	}
+	
+	@RequestMapping("boardreple.go")
+	public ModelAndView boardreplego(@RequestParam int b_num, ModelAndView mav) {
+		
+		BoardDTO dto = boardDao.b_getupperinfo(b_num);
+		
+		mav.setViewName("board/boardre");
+		mav.addObject("var", dto);
+		
+		return mav;
+	}
+	
+	@RequestMapping("boardrewrite.do")
+	public String boardrewritedo(@ModelAttribute BoardDTO dto) {
+		
+		int b_num = boardDao.b_reinsert(dto);
 		
 		return "redirect:/board/boardview.go?b_num="+b_num;
 	}

@@ -12,10 +12,12 @@ public interface BoardDAO {
 	public BoardDTO b_view(int b_num, HttpSession session);									//글보기
 	public int b_insert(BoardDTO dto);									//글쓰기
 	public void b_update(BoardDTO dto);									//글수정
-	public void b_delete(int b_num);									//글삭제
+	public void b_delete(int b_num, int b_mnum);									//글삭제
 	public void b_upcount(int b_num);									//조회수 증가
 	public int b_count(String option, String keyword);				//글 갯수
 	public int c_count(int b_num);
 	public boolean pwdcheck(BoardDTO dto);
+	public BoardDTO b_getupperinfo(int b_num);
+	public int b_reinsert(BoardDTO dto);
 	
 }

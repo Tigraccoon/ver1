@@ -77,6 +77,14 @@ function list(page, option, keyword){
 			<td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;"><fmt:formatDate value="${list.b_date }" pattern="yyyy-MM-dd hh:mm:ss E"/></td>
 		</tr>
 		</c:if>
+		<c:if test="${list.b_show == 'N' && list.b_secret == 'N'}">
+		<tr>	
+			<th scope="row" style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">${list.idx }</th>
+			<td colspan="4" style="text-align: center;">
+				삭제된 글입니다
+			</td>
+		</tr>
+		</c:if>
 		
 	</c:forEach>
 </tbody>

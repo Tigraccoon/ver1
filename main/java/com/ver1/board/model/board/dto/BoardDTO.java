@@ -7,6 +7,7 @@ public class BoardDTO {
 	private int b_num;
 	private int b_unum;
 	private int b_gnum;
+	private int b_mnum;
 	private String b_writer;
 	private String b_pwd;
 	private String b_subject;
@@ -18,7 +19,6 @@ public class BoardDTO {
 	private int c_count;
 	private int b_count;
 	private int idx;
-	
 	public int getB_num() {
 		return b_num;
 	}
@@ -36,6 +36,12 @@ public class BoardDTO {
 	}
 	public void setB_gnum(int b_gnum) {
 		this.b_gnum = b_gnum;
+	}
+	public int getB_mnum() {
+		return b_mnum;
+	}
+	public void setB_mnum(int b_mnum) {
+		this.b_mnum = b_mnum;
 	}
 	public String getB_writer() {
 		return b_writer;
@@ -105,10 +111,11 @@ public class BoardDTO {
 	}
 	@Override
 	public String toString() {
-		return "BoardDTO [b_num=" + b_num + ", b_unum=" + b_unum + ", b_gnum=" + b_gnum + ", b_writer=" + b_writer
-				+ ", b_pwd=" + b_pwd + ", b_subject=" + b_subject + ", b_content=" + b_content + ", b_readcount="
-				+ b_readcount + ", b_date=" + b_date + ", b_show=" + b_show + ", b_secret=" + b_secret + ", c_count="
-				+ c_count + ", b_count=" + b_count + ", idx=" + idx + "]";
+		return "BoardDTO [b_num=" + b_num + ", b_unum=" + b_unum + ", b_gnum=" + b_gnum + ", b_mnum=" + b_mnum
+				+ ", b_writer=" + b_writer + ", b_pwd=" + b_pwd + ", b_subject=" + b_subject + ", b_content="
+				+ b_content + ", b_readcount=" + b_readcount + ", b_date=" + b_date + ", b_show=" + b_show
+				+ ", b_secret=" + b_secret + ", c_count=" + c_count + ", b_count=" + b_count + ", idx=" + idx + "]";
 	}
+	
 	
 }

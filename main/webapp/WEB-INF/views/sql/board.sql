@@ -62,6 +62,7 @@ create table board (
 b_num number not null primary key, --게시물번호 
 b_unum number default null,         --부모 번호
 b_gnum number default 0,            --게시물 그룹 내부 순서
+b_mnum number default null,     --최상위글 번호
 b_writer varchar2(60) not null, --작성자
 b_pwd varchar2(70) not null,    --비밀번호
 b_subject varchar2(170) not null, --제목
@@ -100,12 +101,12 @@ increment by 1;
 
 
 declare --선언부
-    i number := 1;
+    i number := 2;
 begin --실행부
     while i<=250 loop
-        insert into board (b_num,b_subject,b_content,b_writer, b_pwd, b_gnum)
+        insert into board (b_num,b_mnum,b_subject,b_content,b_writer, b_pwd, b_gnum)
         values
-        ( seq_b.nextval
+        ( seq_b.nextval,seq_b.nextval
         ,'제목'||i, '내용'||i, 'kim', '1234', 0);
         i := i+1; --조건 변경
     end loop;
@@ -134,11 +135,11 @@ insert into board(b_num, b_unum, b_gnum, b_writer, b_pwd, b_subject, b_content) 
 SELECT * FROM (
 			SELECT rownum AS rn, ROW_NUMBER() OVER(ORDER BY rownum DESC) as idx,
 			A.* FROM (
-				SELECT level, b_num,b_unum, b_gnum,b_writer,LPAD(' ', 4*(LEVEL-1)) || CASE WHEN (LEVEL -1) > 0 THEN 'ㄴ' END || b_subject as b_subject
+				SELECT level, b_num,b_unum, b_gnum,b_mnum,b_writer,LPAD(' ', 4*(LEVEL-1)) || CASE WHEN (LEVEL -1) > 0 THEN '┖ ' END || b_subject as b_subject
                     , b_pwd ,b_date,b_readcount,b_show,b_secret 
 	  				,(select count(*) from board_comment c where c.b_num=b.b_num and c_show='Y') c_count
 					FROM board b
-					WHERE b.b_show='Y' AND b.b_writer LIKE '%'
+					WHERE b.b_show LIKE '%' AND b.b_writer LIKE '%'
                     START WITH b_unum IS NULL
                     CONNECT BY PRIOR b_num = b_unum  
 					ORDER SIBLINGS BY b_gnum ASC, b_num DESC
@@ -146,12 +147,23 @@ SELECT * FROM (
 		) WHERE rn BETWEEN 1 AND 10 order by rn ASC; 
         
         
+        
 select * from board order by b_num desc;
+
+update board set b_show='Y', b_secret='N' where b_num>=262;
 
 commit;
 
+SELECT b_num as b_unum, (SELECT nvl2(max(b_gnum),max(b_gnum)+1,1) FROM board WHERE b_unum=248) as b_gnum
+			, b_writer, b_subject, b_content, b_date
+			FROM board 
+			WHERE b_num=248;
+
+SELECT nvl2(max(b_gnum),max(b_gnum)+1,1) FROM board WHERE b_unum=248;
+
 delete from board where b_num=253;
 
+SELECT b_show FROM board WHERE b_unum=253 OR b_num=253 OR b_num=250 OR b_unum=250;
 
 create index b_num_idx on board(b_num, b_writer);
 drop index b_num_idx;
@@ -160,8 +172,10 @@ SELECT seq_b.currval FROM dual;
 select seq_board.nextval from dual;
 
 INSERT INTO board 
-			(b_num, b_writer, b_pwd, b_subject, b_content) 
-			VALUES(seq_board.nextval, '작성자1', '1234', '제에목', '내애애애애용');
+			(b_num, b_mnum, b_writer, b_pwd, b_subject, b_content) 
+			VALUES(seq_b.nextval,seq_b.nextval, '작성자1', '1234', '제에목', '내애애애애용');
+
+select * from board;
 
 commit;
 
