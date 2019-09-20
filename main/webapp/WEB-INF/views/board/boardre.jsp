@@ -326,7 +326,7 @@ function pwdcheck(target){
 			<tr class="table-primary">
 				<td colspan="4" height="1500%">
 					<div id="cont" style="white-space: normal; word-wrap: break-word;">
-					<c:out value="${var.b_content }" />
+					${var.b_content }
 					<br><br><br><br><br><br><br></div>
 				</td>
 			</tr>

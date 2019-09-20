@@ -162,8 +162,8 @@ function pwdlengthcheck(target, maxlength, str) {
 					<input name="c_writer" id="c_writer" class="form-control" required="required" 
 					placeholder="이름을 입력하세요" aria-describedby="basic-addon1"
 					oninput="spacebarcheck($('#c_writer')); textlengthcheck($('#c_writer'), 15, $('#basic-addon1'));">
-				  	<div class="input-group-append">
-				    	<span class="input-group-text" id="basic-addon1">(0/15)</span>
+				  	<div class="input-group-append" style="width: 200px">
+				    	<span class="input-group-text" id="basic-addon1" style="width: 90px">(0/15)</span>
 				  	</div>
 				</div>
 			</td>
@@ -174,8 +174,8 @@ function pwdlengthcheck(target, maxlength, str) {
 					placeholder="비밀번호를 입력하세요" aria-describedby="basic-addon2"
 					oninput="spacebarcheck($('#c_pwd')); pwdlengthcheck($('#c_pwd'), 20, $('#basic-addon2'));"
 					onblur="pwdcheck($('#c_pwd'));">
-				  	<div class="input-group-append">
-				    	<span class="input-group-text" id="basic-addon2">(0/20)</span>
+				  	<div class="input-group-append" style="width: 200px">
+				    	<span class="input-group-text" id="basic-addon2" style="width: 90px">(0/20)</span>
 				  	</div>
 				</div>
 			</td>			
@@ -192,8 +192,8 @@ function pwdlengthcheck(target, maxlength, str) {
 				<textarea rows="3" cols="80" placeholder="댓글을 입력하세요" id="c_content" class="form-control" 
 				name="c_content" required="required" aria-describedby="basic-addon3"
 				oninput="textlengthcheck($('#c_content'), 200, $('#basic-addon3'));"></textarea>
-			  	<div class="input-group-append">
-			    	<span class="input-group-text" id="basic-addon3">(0/200)</span>
+			  	<div class="input-group-append" style="width: 200px">
+			    	<span class="input-group-text" id="basic-addon3" style="width: 90px">(0/200)</span>
 			  	</div>
 			</div>
 			</td>
@@ -228,7 +228,7 @@ function pwdlengthcheck(target, maxlength, str) {
 			<br>
 			<c:out value="${war.c_content }"/>
 		</td>
-		<td width="20%">
+		<td width="300px">
 		<div class="input-group mb-3">
 		  <input type="password" class="form-control" id="cpwd${war.c_num }" placeholder="비밀번호" aria-describedby="button-addon${war.c_num }">
 		  <div class="input-group-append">
@@ -236,8 +236,13 @@ function pwdlengthcheck(target, maxlength, str) {
 		    onclick="
 			    if('${war.c_pwd}' != $('#cpwd'+'${war.c_num }').val()){
 			    	alert('비밀번호가 다릅니다.');
+			    	$('#cpwd'+'${war.c_num }').focus();
 			    } else{
+			    	$('#cpwd'+'${war.c_num }').val('');
 			    	$('#commentupdate'+'${war.c_num}').modal('show');
+			    	textlengthcheck($('#c_writer'+'${war.c_num }'), 15, $('#m-name'+'${war.c_num }'));
+			    	pwdlengthcheck($('#c_pwd'+'${war.c_num }'), 20, $('#m-pwd'+'${war.c_num }'));
+			    	textlengthcheck($('#c_content'+'${war.c_num }'), 200, $('#m-content'+'${war.c_num }'));
 			    }
 		    ">수정/삭제</button>
 		  </div>
@@ -261,8 +266,8 @@ function pwdlengthcheck(target, maxlength, str) {
 <div class="container-fluid">
   <div class="row justify-content-center">
 	<div class="col col-10">
-<div class="modal fade" id="commentupdate${mo.c_num}" tabindex="-1" role="dialog" aria-labelledby="commentupdateLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+<div class="modal fade bd-example-modal-xl" id="commentupdate${mo.c_num}" tabindex="-1" role="dialog" aria-labelledby="commentupdateLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="commentupdateLabel">댓글 수정/삭제</h5>
@@ -282,7 +287,7 @@ function pwdlengthcheck(target, maxlength, str) {
 				textlengthcheck($('#c_writer'+'${mo.c_num }'), 15, $('#m-name'+'${mo.c_num }'));"
 				onfocus="textlengthcheck($('#c_writer'+'${mo.c_num }'), 15, $('#m-name'+'${mo.c_num }'));">
 			  	<div class="input-group-append">
-			    	<span class="input-group-text" id="m-name${mo.c_num }">(0/15)</span>
+			    	<span class="input-group-text" id="m-name${mo.c_num }" style="width: 90px">(0/15)</span>
 			  	</div>
 			</div>
 			<br>
@@ -301,7 +306,7 @@ function pwdlengthcheck(target, maxlength, str) {
 				onblur="pwdcheck($('#c_pwd'+'${mo.c_num }'));" 
 				onfocus="pwdlengthcheck($('#c_pwd'+'${mo.c_num }'), 20, $('#m-pwd'+'${mo.c_num }'));">
 			  	<div class="input-group-append">
-			    	<span class="input-group-text" id="m-pwd${mo.c_num }">(0/20)</span>
+			    	<span class="input-group-text" id="m-pwd${mo.c_num }" style="width: 90px">(0/20)</span>
 			  	</div>
 			</div>
 		</td>
@@ -314,7 +319,7 @@ function pwdlengthcheck(target, maxlength, str) {
 				oninput="textlengthcheck($('#c_content'+'${mo.c_num }'), 200, $('#m-content'+'${mo.c_num }'));"
 				onfocus="textlengthcheck($('#c_content'+'${mo.c_num }'), 200, $('#m-content'+'${mo.c_num }'));"><c:out value="${mo.c_content }"/></textarea>
 			  	<div class="input-group-append">
-			    	<span class="input-group-text" id="m-content${mo.c_num }">(0/200)</span>
+			    	<span class="input-group-text" id="m-content${mo.c_num }" style="width: 90px">(0/200)</span>
 			  	</div>
 			</div>
 		</td>

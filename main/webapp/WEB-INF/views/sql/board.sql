@@ -133,7 +133,7 @@ insert into board(b_num, b_unum, b_gnum, b_writer, b_pwd, b_subject, b_content) 
 
 
 SELECT * FROM (
-			SELECT rownum AS rn, ROW_NUMBER() OVER(ORDER BY rownum DESC) as idx,
+             SELECT rownum AS rn, ROW_NUMBER() OVER(ORDER BY rownum DESC) as idx,
 			A.* FROM (
 				SELECT level, b_num,b_unum, b_gnum,b_mnum,b_writer,LPAD(' ', 4*(LEVEL-1)) || CASE WHEN (LEVEL -1) > 0 THEN '¦Å ' END || b_subject as b_subject
                     , b_pwd ,b_date,b_readcount,b_show,b_secret 
@@ -142,7 +142,7 @@ SELECT * FROM (
 					WHERE b.b_show LIKE '%' AND b.b_writer LIKE '%'
                     START WITH b_unum IS NULL
                     CONNECT BY PRIOR b_num = b_unum  
-					ORDER SIBLINGS BY b_gnum ASC, b_num DESC
+					ORDER SIBLINGS BY b_gnum DESC, b_num DESC
 					) A
 		) WHERE rn BETWEEN 1 AND 10 order by rn ASC; 
         
@@ -163,7 +163,7 @@ SELECT nvl2(max(b_gnum),max(b_gnum)+1,1) FROM board WHERE b_unum=248;
 
 delete from board where b_num=253;
 
-SELECT b_show FROM board WHERE b_unum=253 OR b_num=253 OR b_num=250 OR b_unum=250;
+SELECT b_show FROM board WHERE b_num=253 OR b_mnum=251;
 
 create index b_num_idx on board(b_num, b_writer);
 drop index b_num_idx;

@@ -138,7 +138,21 @@ public class BoardController {
 		mav.addObject("c_count", c_count);
 		
 		
-		if(c_count > 0) { mav.addObject("war", commentDao.c_list(b_num)); }
+		if(c_count > 0) { 
+			List<CommentDTO> cdto = commentDao.c_list(b_num);
+			
+			for(CommentDTO tcdto : cdto) {
+				String tcontent = tcdto.getC_content();
+				
+				tcontent = tcontent.replaceAll("&", "&amp;");
+				tcontent = tcontent.replaceAll("<", "&lt;");
+				tcontent = tcontent.replaceAll(">", "&gt;");
+				tcontent = tcontent.replaceAll("\n", "<br>");
+				tcontent = tcontent.replaceAll("  ", "&nbsp;&nbsp;");
+			}
+			
+			mav.addObject("war", cdto); 
+		}
 		
 		
 		return mav;

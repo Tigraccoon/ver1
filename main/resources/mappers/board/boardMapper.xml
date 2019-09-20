@@ -26,7 +26,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 					<include refid="search" />
 					START WITH b_unum IS NULL
                     CONNECT BY PRIOR b_num = b_unum  
-					ORDER SIBLINGS BY b_gnum ASC, b_num DESC 
+					ORDER SIBLINGS BY b_gnum DESC, b_num DESC 
 					) A
 		) WHERE rn BETWEEN #{begin} AND #{end}
 		ORDER BY rn ASC

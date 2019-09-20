@@ -51,7 +51,7 @@ function list(page, option, keyword){
 		<th scope="col" width="50%" style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">제목</th>
 		<th scope="col" style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">작성자</th>
 		<th scope="col" style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">조회수</th>
-		<th scope="col" style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">날짜</th>
+		<th scope="col" width="15%" style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">날짜</th>
 	</tr>
 </thead>
 <tbody>
@@ -74,14 +74,19 @@ function list(page, option, keyword){
 			</td>
 			<td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">${list.b_writer }</td>
 			<td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">${list.b_readcount }</td>
-			<td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;"><fmt:formatDate value="${list.b_date }" pattern="yyyy-MM-dd hh:mm:ss E"/></td>
+			<td width="10%" style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">
+				<fmt:formatDate value="${list.b_date }" pattern="yyyy-MM-dd hh:mm:ss E"/>
+			</td>
 		</tr>
 		</c:if>
 		<c:if test="${list.b_show == 'N' && list.b_secret == 'N'}">
 		<tr>	
 			<th scope="row" style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">${list.idx }</th>
-			<td colspan="4" style="text-align: center;">
+			<td colspan="3" style="text-align: center;">
 				삭제된 글입니다
+			</td>
+			<td width="15%" style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">
+				<fmt:formatDate value="${list.b_date }" pattern="yyyy-MM-dd hh:mm:ss E"/>
 			</td>
 		</tr>
 		</c:if>
