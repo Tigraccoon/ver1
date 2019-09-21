@@ -109,6 +109,10 @@ function pwdlengthcheck(target, maxlength, str) {
 	
 }
 
+function fn_filedown(b_num){
+	window.open('${path}/board/filedown.do?b_num='+b_num,'#');
+}
+
 </script>
 </head>
 <body>
@@ -132,7 +136,13 @@ function pwdlengthcheck(target, maxlength, str) {
 	<tr class="table-primary">
 		<td colspan="4" height="1500%">
 			<div id="cont" style="white-space: normal; word-wrap: break-word;">${var.b_content }
-			<br><br><br><br><br><br><br></div>
+			<br><br><br><br><br><br><br>
+			<c:if test="${var.b_filename != null }">
+			첨부파일  :  ${var.b_filename } 
+			(<fmt:formatNumber pattern="#,###" value="${var.b_filesize }"/> KB) 
+			<button class="btn btn-outline-secondary" onclick="fn_filedown('${var.b_num}')">다운받기</button>
+			</c:if>
+			</div>
 		</td>
 	</tr>
 	<tr class="table-primary" style="text-align: center;">

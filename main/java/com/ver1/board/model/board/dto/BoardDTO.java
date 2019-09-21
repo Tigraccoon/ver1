@@ -2,6 +2,8 @@ package com.ver1.board.model.board.dto;
 
 import java.util.Date;
 
+import org.springframework.web.multipart.MultipartFile;
+
 public class BoardDTO {
 	
 	private int b_num;
@@ -12,6 +14,10 @@ public class BoardDTO {
 	private String b_pwd;
 	private String b_subject;
 	private String b_content;
+	private String b_filename;
+	private byte[] b_blob;
+	private MultipartFile b_file;
+	private long b_filesize;
 	private int b_readcount;
 	private Date b_date;
 	private String b_show;
@@ -67,6 +73,30 @@ public class BoardDTO {
 	public void setB_content(String b_content) {
 		this.b_content = b_content;
 	}
+	public String getB_filename() {
+		return b_filename;
+	}
+	public void setB_filename(String b_filename) {
+		this.b_filename = b_filename;
+	}
+	public byte[] getB_blob() {
+		return b_blob;
+	}
+	public void setB_blob(byte[] b_blob) {
+		this.b_blob = b_blob;
+	}
+	public MultipartFile getB_file() {
+		return b_file;
+	}
+	public void setB_file(MultipartFile b_file) {
+		this.b_file = b_file;
+	}
+	public long getB_filesize() {
+		return b_filesize;
+	}
+	public void setB_filesize(long b_filesize) {
+		this.b_filesize = b_filesize;
+	}
 	public int getB_readcount() {
 		return b_readcount;
 	}
@@ -109,13 +139,5 @@ public class BoardDTO {
 	public void setIdx(int idx) {
 		this.idx = idx;
 	}
-	@Override
-	public String toString() {
-		return "BoardDTO [b_num=" + b_num + ", b_unum=" + b_unum + ", b_gnum=" + b_gnum + ", b_mnum=" + b_mnum
-				+ ", b_writer=" + b_writer + ", b_pwd=" + b_pwd + ", b_subject=" + b_subject + ", b_content="
-				+ b_content + ", b_readcount=" + b_readcount + ", b_date=" + b_date + ", b_show=" + b_show
-				+ ", b_secret=" + b_secret + ", c_count=" + c_count + ", b_count=" + b_count + ", idx=" + idx + "]";
-	}
-	
 	
 }

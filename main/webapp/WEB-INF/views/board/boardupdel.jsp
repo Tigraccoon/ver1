@@ -20,7 +20,7 @@ $(document).ready(function() {
 	registerSummernote($('#b_content'), '본문을 입력하세요.', 2000, function(max) {
 	    $('#maxContentPost').text(max)
 	});
-	
+
 	$("#btnUpdate").click(function(){
 		
 		var b_writer = $("#b_writer");
@@ -224,6 +224,26 @@ function subjectcheck(subject) {
 	subject.val(subjectstr);
 }
 
+function filesizecheck(tfile, str){
+	
+	 const max = 10485760;
+	 
+	 var tsize = tfile.files[0].size;
+	
+	 var tmb = Math.ceil(tsize / 1024 / 1024);
+	 
+	 if(tsize > max){
+		 alert('첨부 파일은 10MB 이내로 등록 가능합니다.\n현재 파일 크기 : '+tmb);
+		 return false;
+	 } else if(tsize == 0){
+		str.css("color", "black");
+		str.text('(' + tmb + ' MB/' + 10 + ' MB)');
+	 } else {
+		str.css("color", "blue");
+		str.text('(' + tmb + ' MB/' + 10 + ' MB)');
+	 }
+	 
+}
 </script>
 </head>
 <body>
@@ -232,7 +252,7 @@ function subjectcheck(subject) {
 	<div class="row justify-content-center">
 		<div class="col col-10">
 <br>
-<form action="${path}/board/boardwrite.do" method="post" id="updateform" name="updateform">
+<form action="${path}/board/boardwrite.do" method="post" id="updateform" name="updateform" enctype="multipart/form-data">
 <table class="table table-borderless" style="width: 100%; text-align: center;">
 	<tr class="table-primary">
 		<th colspan="3"><h2>글 수정/삭제</h2></th>
@@ -243,7 +263,7 @@ function subjectcheck(subject) {
 			<input type="text" name="b_writer" id="b_writer" class="form-control" required="required" placeholder="이름을 입력하세요."
 			value="${var.b_writer }" oninput="spacebarcheck($('#b_writer')); textlengthcheck($('#b_writer'), 15, $('#writernum'));">
 		</td>
-		<td width="5%" id="writernum">(0/15)</td>
+		<td width="150px" id="writernum">(0/15)</td>
 	</tr>
 	<tr class="table-primary">
 		<th><label for="b_pwd">비밀번호</label></th>
@@ -252,20 +272,40 @@ function subjectcheck(subject) {
 			value="${var.b_pwd }" placeholder="비밀번호를 입력하세요. 영문, 숫자, 특수문자로 6자 이상 입력되어야 합니다." 
 			oninput="spacebarcheck($('#b_pwd')); pwdlengthcheck($('#b_pwd'), 20, $('#pwdnum'));">
 		</td>
-		<td width="5%" id="pwdnum">(0/20)</td>
+		<td width="150px" id="pwdnum">(0/20)</td>
 	</tr>
 	<tr class="table-primary">
 		<th><label for="b_subject">제목</label></th>
 		<td>
 			<input type="text" name="b_subject" id="b_subject" class="form-control" placeholder="제목을 입력하세요." required="required" 
 			value="${var.b_subject }" oninput="textlengthcheck($('#b_subject'), 50, $('#subjectnum'));"
-			onfocusout="subjectcheck($('#b_subject')); textlengthcheck($('#b_subject'), 50, $('#subjectnum'));">
+			onblur="subjectcheck($('#b_subject')); textlengthcheck($('#b_subject'), 50, $('#subjectnum'));">
 		</td>
-		<td width="5%" id="subjectnum">(0/50)</td>
+		<td width="150px" id="subjectnum">(0/50)</td>
+	</tr>
+	<tr class="table-primary">
+		<th><label for="b_file">파일</label></th>
+		<td>
+			<%--  
+			<c:if test="${var.b_filename != null }">${var.b_filename }</c:if>
+			--%>
+			<input type="file" class="form-control-file" id="b_file" name="b_file"
+			onchange="filesizecheck(this, $('#filesize'));"
+			onclick="
+				if('${var.b_filesize}' > 0){
+					 if(confirm('첨부파일 재 등록시 원본 첨부파일은 삭제됩니다.') == true){
+					 	return true;
+					 } else{
+					 	return false;
+					 }
+				 }
+			">
+		</td>
+		<td width="150px" id="filesize">(0 MB/10 MB)</td>
 	</tr>
 	<tr class="table-primary">
 		<th colspan="2"><label for="b_content">본문</label></th>
-		<td width="5%" id="contentnum">(0/2000)</td>
+		<td width="150px" id="contentnum">(0/2000)</td>
 	</tr>
 	<tr class="table-primary" style="text-align: left;">
 		<td colspan="3"><textarea name="b_content" id="b_content" class="form-control" required="required">${var.b_content }</textarea></td>

@@ -34,7 +34,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<!-- 글보기 -->
 	<select id="b_view" resultType="BoardDTO">
-		SELECT * FROM board 
+		SELECT b_num, b_unum, b_gnum, b_mnum, b_writer, b_pwd, b_subject, b_content
+		, b_filename, b_file as b_blob, b_filesize, b_readcount, b_date, b_show, b_secret 
+			FROM board 
 			WHERE b_num=#{b_num}
 	</select>
 	
@@ -58,7 +60,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="upperinfo" resultType="BoardDTO">
 		SELECT b_num as b_unum, b_mnum
 			, (SELECT nvl2(max(b_gnum),max(b_gnum)+1,1) FROM board WHERE b_unum=#{b_num}) as b_gnum
-			, b_writer, b_subject, b_content, b_date
+			, b_writer, b_subject, b_content, b_date, b_file as b_blob, b_filename, b_filesize 
 			FROM board 
 			WHERE b_num=#{b_num}
 	</select>
@@ -75,16 +77,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<!-- 글쓰기 -->
 	<insert id="b_insert">
 		INSERT INTO board 
-			(b_num, b_mnum, b_writer, b_pwd, b_subject, b_content) 
-			VALUES(seq_b.nextval, seq_b.nextval, #{b_writer}, #{b_pwd}, #{b_subject}, #{b_content})
+			(b_num, b_mnum, b_writer, b_pwd, b_subject, b_content, b_filename, b_file, b_filesize) 
+			VALUES(seq_b.nextval, seq_b.nextval, #{b_writer}, #{b_pwd}
+			, #{b_subject}, #{b_content}, #{b_filename}, #{b_blob}, #{b_filesize})
 	</insert>
 	
 	<!-- 답글쓰기 -->
 	<insert id="b_reinsert">
 		INSERT INTO board 
-			(b_num, b_unum, b_gnum, b_mnum, b_writer, b_pwd, b_subject, b_content) 
+			(b_num, b_unum, b_gnum, b_mnum, b_writer, b_pwd, b_subject, b_content, b_filename, b_file, b_filesize) 
 			VALUES(seq_b.nextval, #{b_unum}, #{b_gnum}, #{b_mnum} 
-			, #{b_writer}, #{b_pwd}, #{b_subject}, #{b_content})
+			, #{b_writer}, #{b_pwd}, #{b_subject}, #{b_content}, #{b_filename}, #{b_blob}, #{b_filesize})
 	</insert>
 	
 <!-- /insert -->
@@ -101,6 +104,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		UPDATE board 
 			SET b_subject=#{b_subject}, b_content=#{b_content},
 			b_writer=#{b_writer}, b_pwd=#{b_pwd}
+			WHERE b_num=#{b_num}
+	</update>
+	
+	<!-- 첨부파일도 수정 -->
+	<update id="b_updateall">
+		UPDATE board 
+			SET b_subject=#{b_subject}, b_content=#{b_content},
+			b_writer=#{b_writer}, b_pwd=#{b_pwd}, 
+			b_filename=#{b_filename}, b_file=#{b_blob}, b_filesize=#{b_filesize} 
 			WHERE b_num=#{b_num}
 	</update>
 	

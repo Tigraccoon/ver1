@@ -220,6 +220,27 @@ function pwdcheck(target){
 	}
 }
 
+function filesizecheck(tfile, str){
+	
+	 const max = 10485760;
+	 
+	 var tsize = tfile.files[0].size;
+	
+	 var tmb = Math.ceil(tsize / 1024 / 1024);
+	 
+	 if(tsize > max){
+		 alert('첨부 파일은 10MB 이내로 등록 가능합니다.\n현재 파일 크기 : '+tmb);
+		 return false;
+	 } else if(tsize == 0){
+		str.css("color", "black");
+		str.text('(' + tmb + ' MB/' + 10 + ' MB)');
+	 } else {
+		str.css("color", "blue");
+		str.text('(' + tmb + ' MB/' + 10 + ' MB)');
+	 }
+	 
+}
+
 </script>
 </head>
 <body>
@@ -228,7 +249,7 @@ function pwdcheck(target){
 	<div class="row justify-content-center">
 		<div class="col col-10">
 <br>
-<form action="${path}/board/boardwrite.do" method="post" id="writeform" name="writeform" >
+<form action="${path}/board/boardwrite.do" method="post" id="writeform" name="writeform" enctype="multipart/form-data">
 <table class="table table-borderless" style="width: 100%; text-align: center;" id="writetable">
 	<tr class="table-primary">
 		<th colspan="3"><h2>글쓰기</h2></th>
@@ -261,6 +282,14 @@ function pwdcheck(target){
 			onblur="subjectcheck($('#b_subject')); textlengthcheck($('#b_subject'), 50, $('#subjectnum'));">
 		</td>
 		<td width="150px" id="subjectnum">(0/50)</td>
+	</tr>
+	<tr class="table-primary">
+		<th><label for="b_file">파일</label></th>
+		<td>
+			<input type="file" class="form-control-file" id="b_file" name="b_file"
+			onchange="filesizecheck(this, $('#filesize'));">
+		</td>
+		<td width="150px" id="filesize">(0 MB/10 MB)</td>
 	</tr>
 	<tr class="table-primary">
 		<th colspan="2"><label for="b_content">본문</label></th>

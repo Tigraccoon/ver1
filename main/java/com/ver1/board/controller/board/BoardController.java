@@ -2,10 +2,12 @@ package com.ver1.board.controller.board;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
@@ -99,6 +101,18 @@ public class BoardController {
 	
 	@RequestMapping("boardwrite.do")
 	public String boardwritedo(@ModelAttribute BoardDTO dto) {
+		dto.setB_filename(dto.getB_file().getOriginalFilename());
+		
+		try {
+			
+			byte[] bt = dto.getB_file().getBytes();
+			
+			dto.setB_blob(bt);
+			dto.setB_filesize(bt.length);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		
 		int b_num = boardDao.b_insert(dto);
 		
@@ -132,6 +146,11 @@ public class BoardController {
 		
 		dto.setB_writer(b_writer);
 		
+		if(dto.getB_filename() != null) {
+			
+			dto.setB_filesize((long)Math.ceil(dto.getB_filesize() / 1024));
+		}
+		
 		mav.addObject("var", dto);
 		
 		int c_count = boardDao.c_count(b_num);
@@ -153,7 +172,6 @@ public class BoardController {
 			
 			mav.addObject("war", cdto); 
 		}
-		
 		
 		return mav;
 	}
@@ -202,8 +220,28 @@ public class BoardController {
 	
 	@RequestMapping("boardupdate.do")
 	public String bupdatedo(@ModelAttribute BoardDTO dto) {
+		System.out.println("\r\r\r"+dto.getB_file().getOriginalFilename()+"파일이름\r\r\r");
+		if(dto.getB_file().getOriginalFilename() == "") {
+			System.out.println("\r\r\rupdate\r\r\r");
+			boardDao.b_update(dto);
+			
+		} else {
+			System.out.println("\r\r\rupdateall\r\r\r");
+			dto.setB_filename(dto.getB_file().getOriginalFilename());
+			
+			try {
+				
+				byte[] bt = dto.getB_file().getBytes();
+				
+				dto.setB_blob(bt);
+				dto.setB_filesize(bt.length);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			boardDao.b_updateall(dto);
+		}
 		
-		boardDao.b_update(dto);
 		
 		return "redirect:/board/boardview.go?b_num=" + dto.getB_num();
 	}
@@ -251,11 +289,26 @@ public class BoardController {
 	}
 	
 	@RequestMapping("boardrewrite.do")
-	public String boardrewritedo(@ModelAttribute BoardDTO dto) {
+	public String boardrewritedo(@ModelAttribute BoardDTO dto){
 		
 		int b_num = boardDao.b_reinsert(dto);
 		
 		return "redirect:/board/boardview.go?b_num="+b_num;
+	}
+	
+	@RequestMapping("filedown.do")
+	public void filedowndo(@RequestParam int b_num, HttpServletResponse response) throws Exception {
+		
+		BoardDTO dto = boardDao.b_getupperinfo(b_num);
+		
+		response.setContentType("application/octet-stream");
+		response.setContentLength((int)dto.getB_filesize());
+		response.setHeader("Content-Disposition", "attachment; fileName=\"" + URLEncoder.encode(dto.getB_filename(),"UTF-8")+"\";");
+		response.setHeader("Content-Transfer-Encoding", "binary");
+		response.getOutputStream().write(dto.getB_blob());
+		response.getOutputStream().flush();
+		response.getOutputStream().close();
+		
 	}
 	
 	

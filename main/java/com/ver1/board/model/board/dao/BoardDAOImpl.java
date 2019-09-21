@@ -137,4 +137,9 @@ public class BoardDAOImpl implements BoardDAO {
 		return sqlSession.selectOne("board.getcurrval");
 	}
 
+	@Override
+	public void b_updateall(BoardDTO dto) {
+		sqlSession.update("board.b_updateall", dto);
+	}
+
 }

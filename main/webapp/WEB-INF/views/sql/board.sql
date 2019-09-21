@@ -67,6 +67,9 @@ b_writer varchar2(60) not null, --작성자
 b_pwd varchar2(70) not null,    --비밀번호
 b_subject varchar2(170) not null, --제목
 b_content clob not null, --본문
+b_filename varchar2(300), --파일 이름
+b_file blob,            --파일
+b_filesize number,     --파일 크기
 b_readcount number default 0,	--조회수
 b_date date default sysdate, --작성일자 
 b_show char(1) default 'Y',    --게시판 출력 여부

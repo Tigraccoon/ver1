@@ -228,7 +228,7 @@ function pwdcheck(target){
 	<div class="row justify-content-center">
 		<div class="col col-10">
 <br>
-<form action="${path}/board/boardrewrite.do" method="post" id="writeform" name="writeform" >
+<form action="${path}/board/boardrewrite.do" method="post" id="writeform" name="writeform" enctype="multipart/form-data">
 <table class="table table-borderless" style="width: 100%; text-align: center;" id="writetable">
 	<tr class="table-primary">
 		<th colspan="3"><h2>답글쓰기</h2></th>
@@ -269,6 +269,14 @@ function pwdcheck(target){
 			onblur="subjectcheck($('#b_subject')); textlengthcheck($('#b_subject'), 50, $('#subjectnum'));">
 		</td>
 		<td width="150px" id="subjectnum">(0/50)</td>
+	</tr>
+	<tr class="table-primary">
+		<th><label for="b_file">파일</label></th>
+		<td>
+			<input type="file" class="form-control-file" id="b_file" name="b_file"
+			onchange="filesizecheck(this, $('#filesize'));">
+		</td>
+		<td width="150px" id="filesize">(0 MB/10 MB)</td>
 	</tr>
 	<tr class="table-primary">
 		<th colspan="2"><label for="b_content">본문</label></th>
@@ -327,7 +335,13 @@ function pwdcheck(target){
 				<td colspan="4" height="1500%">
 					<div id="cont" style="white-space: normal; word-wrap: break-word;">
 					${var.b_content }
-					<br><br><br><br><br><br><br></div>
+					<br><br><br><br><br><br><br>
+					<c:if test="${var.b_filename != null }">
+					첨부파일  :  ${var.b_filename } 
+					(<fmt:formatNumber pattern="#,###" value="${var.b_filesize }"/> KB) 
+					<button class="btn btn-outline-secondary" onclick="fn_filedown('${var.b_num}')">다운받기</button>
+					</c:if>
+					</div>
 				</td>
 			</tr>
 		</table>
