@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.ver1.board.model.board.Pager;
@@ -161,6 +162,8 @@ public class BoardController {
 			List<CommentDTO> cdto = commentDao.c_list(b_num);
 			
 			for(CommentDTO tcdto : cdto) {
+				int i=0;
+				
 				String tcontent = tcdto.getC_content();
 				
 				tcontent = tcontent.replaceAll("&", "&amp;");
@@ -168,6 +171,13 @@ public class BoardController {
 				tcontent = tcontent.replaceAll(">", "&gt;");
 				tcontent = tcontent.replaceAll("\n", "<br>");
 				tcontent = tcontent.replaceAll("  ", "&nbsp;&nbsp;");
+				
+				tcdto.setC_content(tcontent);
+				
+				
+				cdto.set(i, tcdto);
+				
+				i++;
 			}
 			
 			mav.addObject("war", cdto); 
@@ -290,6 +300,17 @@ public class BoardController {
 	
 	@RequestMapping("boardrewrite.do")
 	public String boardrewritedo(@ModelAttribute BoardDTO dto){
+		dto.setB_filename(dto.getB_file().getOriginalFilename());
+		
+		try {
+			
+			byte[] bt = dto.getB_file().getBytes();
+			
+			dto.setB_blob(bt);
+			dto.setB_filesize(bt.length);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 		int b_num = boardDao.b_reinsert(dto);
 		

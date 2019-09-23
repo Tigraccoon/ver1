@@ -20,7 +20,9 @@ $(document).ready(function() {
 	registerSummernote($('#b_content'), '본문을 입력하세요.', 2000, function(max) {
 	    $('#maxContentPost').text(max)
 	});
-
+	
+	
+	
 	$("#btnUpdate").click(function(){
 		
 		var b_writer = $("#b_writer");

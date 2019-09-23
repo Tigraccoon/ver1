@@ -15,7 +15,8 @@
 <script type="text/javascript">
 
 $(function(){
-	var screenwidth = (screen.width-300)+"px";
+	var screenwidth = (screen.width-500)+"px";
+	
 	document.getElementById('cont').style.width = screenwidth;
 	
 	var errorcheck = '${message}';
@@ -236,10 +237,12 @@ function fn_filedown(b_num){
 			<b><c:out value="${war.c_writer }"/></b>&emsp;&emsp;&emsp;
 			<i>(<fmt:formatDate value="${war.c_date }" pattern="yyyy-MM-dd hh:mm:ss E"/>)</i>
 			<br>
-			<c:out value="${war.c_content }"/>
+			<div id="ccont" style="white-space: normal; word-wrap: break-word; width: 900px;">
+				${war.c_content }
+			</div>
 		</td>
-		<td width="300px">
-		<div class="input-group mb-3">
+		<td>
+		<div class="input-group" style="width: 300px;">
 		  <input type="password" class="form-control" id="cpwd${war.c_num }" placeholder="비밀번호" aria-describedby="button-addon${war.c_num }">
 		  <div class="input-group-append">
 		    <button class="btn btn-outline-success" type="button" id="button-addon${war.c_num }" 

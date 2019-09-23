@@ -220,6 +220,27 @@ function pwdcheck(target){
 	}
 }
 
+function filesizecheck(tfile, str){
+	
+	 const max = 10485760;
+	 
+	 var tsize = tfile.files[0].size;
+	
+	 var tmb = Math.ceil(tsize / 1024 / 1024);
+	 
+	 if(tsize > max){
+		 alert('첨부 파일은 10MB 이내로 등록 가능합니다.\n현재 파일 크기 : '+tmb);
+		 $('#b_file').val('');
+	 } else if(tsize == 0){
+		str.css("color", "black");
+		str.text('(' + tmb + ' MB/' + 10 + ' MB)');
+	 } else {
+		str.css("color", "blue");
+		str.text('(' + tmb + ' MB/' + 10 + ' MB)');
+	 }
+	 
+}
+
 </script>
 </head>
 <body>

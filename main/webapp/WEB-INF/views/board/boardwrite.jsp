@@ -229,8 +229,8 @@ function filesizecheck(tfile, str){
 	 var tmb = Math.ceil(tsize / 1024 / 1024);
 	 
 	 if(tsize > max){
-		 alert('첨부 파일은 10MB 이내로 등록 가능합니다.\n현재 파일 크기 : '+tmb);
-		 return false;
+		 alert('첨부 파일은 10MB 이내로 등록 가능합니다.\n현재 파일 크기 : '+tmb+"MB");
+		 $('#b_file').val('');
 	 } else if(tsize == 0){
 		str.css("color", "black");
 		str.text('(' + tmb + ' MB/' + 10 + ' MB)');
