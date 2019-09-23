@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 다른 mapper와 중복되지 않도록 네임스페이스 기재 -->
+<mapper namespace="file">
+<!-- select -->
+	<select id="list" resultType="BoardDTO">
+		SELECT f_num, b_file as b_blob, b_filename, b_filesize 
+			FROM board_file 
+			WHERE b_num=#{b_num}
+	</select>
+	
+	<select id="fileinfo" resultType="BoardDTO">
+		SELECT f_num, b_file as b_blob, b_filename, b_filesize 
+			FROM board_file
+			WHERE f_num=#{f_num}
+	</select>
+<!-- /select -->
+	
+<!-- insert -->
+	<insert id="insert">
+		INSERT INTO board_file
+			(f_num, b_num, b_filename, b_file, b_filesize) 
+			VALUES(seq_file.nextval, #{b_num}, #{b_filename}, #{b_blob}, #{b_filesize})
+	</insert>
+<!-- /insert -->
+	
+<!-- delete -->
+	<delete id="delfile">
+		DELETE FROM board_file
+			WHERE f_num=#{f_num}
+	</delete>
+<!-- /delete -->
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

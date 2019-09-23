@@ -14,12 +14,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.ver1.board.model.board.Pager;
 import com.ver1.board.model.board.dao.BoardDAO;
 import com.ver1.board.model.board.dao.CommentDAO;
+import com.ver1.board.model.board.dao.FileDAO;
 import com.ver1.board.model.board.dto.BoardDTO;
 import com.ver1.board.model.board.dto.CommentDTO;
 
@@ -31,6 +31,8 @@ public class BoardController {
 	BoardDAO boardDao;
 	@Inject
 	CommentDAO commentDao;
+	@Inject
+	FileDAO fileDao;
 	
 	@RequestMapping("boardlist.do")
 	public ModelAndView list(@RequestParam(defaultValue="1") int curPage,
@@ -102,20 +104,29 @@ public class BoardController {
 	
 	@RequestMapping("boardwrite.do")
 	public String boardwritedo(@ModelAttribute BoardDTO dto) {
-		dto.setB_filename(dto.getB_file().getOriginalFilename());
-		
-		try {
-			
-			byte[] bt = dto.getB_file().getBytes();
-			
-			dto.setB_blob(bt);
-			dto.setB_filesize(bt.length);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
 		
 		int b_num = boardDao.b_insert(dto);
+		
+		dto.setB_num(b_num);
+		
+		if(dto.getB_file().length >= 0) {
+			
+			for(int i=0; i < dto.getB_file().length ; i++) {
+				dto.setB_filename(dto.getB_file()[i].getOriginalFilename());
+				
+				try {
+					
+					byte[] bt = dto.getB_file()[i].getBytes();
+					
+					dto.setB_blob(bt);
+					dto.setB_filesize(bt.length);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+				fileDao.InsertFile(dto);
+			}
+		}
 		
 		return "redirect:/board/boardview.go?b_num="+b_num;
 	}
@@ -147,11 +158,17 @@ public class BoardController {
 		
 		dto.setB_writer(b_writer);
 		
-		if(dto.getB_filename() != null) {
-			
-			dto.setB_filesize((long)Math.ceil(dto.getB_filesize() / 1024));
+		List<BoardDTO> fdto = fileDao.FileList(b_num);
+
+		if(!fdto.isEmpty()) {
+			for(BoardDTO tdto : fdto) {
+				tdto.setB_filesize((long)Math.ceil(tdto.getB_filesize() / 1024));
+				
+			}
 		}
 		
+		
+		mav.addObject("far", fdto);
 		mav.addObject("var", dto);
 		
 		int c_count = boardDao.c_count(b_num);
@@ -230,28 +247,27 @@ public class BoardController {
 	
 	@RequestMapping("boardupdate.do")
 	public String bupdatedo(@ModelAttribute BoardDTO dto) {
-		System.out.println("\r\r\r"+dto.getB_file().getOriginalFilename()+"파일이름\r\r\r");
-		if(dto.getB_file().getOriginalFilename() == "") {
-			System.out.println("\r\r\rupdate\r\r\r");
-			boardDao.b_update(dto);
+		
+		if(dto.getB_file().length >= 0) {
 			
-		} else {
-			System.out.println("\r\r\rupdateall\r\r\r");
-			dto.setB_filename(dto.getB_file().getOriginalFilename());
-			
-			try {
+			for(int i=0; i < dto.getB_file().length; i++) {
 				
-				byte[] bt = dto.getB_file().getBytes();
+				dto.setB_filename(dto.getB_file()[i].getOriginalFilename());
 				
-				dto.setB_blob(bt);
-				dto.setB_filesize(bt.length);
-			} catch (Exception e) {
-				e.printStackTrace();
+				try {
+					
+					byte[] bt = dto.getB_file()[i].getBytes();
+					
+					dto.setB_blob(bt);
+					dto.setB_filesize(bt.length);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
-			
-			boardDao.b_updateall(dto);
+				
 		}
 		
+		boardDao.b_update(dto);
 		
 		return "redirect:/board/boardview.go?b_num=" + dto.getB_num();
 	}
@@ -300,27 +316,40 @@ public class BoardController {
 	
 	@RequestMapping("boardrewrite.do")
 	public String boardrewritedo(@ModelAttribute BoardDTO dto){
-		dto.setB_filename(dto.getB_file().getOriginalFilename());
-		
-		try {
-			
-			byte[] bt = dto.getB_file().getBytes();
-			
-			dto.setB_blob(bt);
-			dto.setB_filesize(bt.length);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		
 		int b_num = boardDao.b_reinsert(dto);
+		
+		dto.setB_num(b_num);
+		
+		if(dto.getB_file().length >= 0) {
+			
+			for(int i=0; i< dto.getB_file().length; i++) {
+				
+				dto.setB_filename(dto.getB_file()[i].getOriginalFilename());
+				
+				try {
+					
+					byte[] bt = dto.getB_file()[i].getBytes();
+					
+					dto.setB_blob(bt);
+					dto.setB_filesize(bt.length);
+					
+					fileDao.InsertFile(dto);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+			}
+		}
+		
 		
 		return "redirect:/board/boardview.go?b_num="+b_num;
 	}
 	
 	@RequestMapping("filedown.do")
-	public void filedowndo(@RequestParam int b_num, HttpServletResponse response) throws Exception {
+	public void filedowndo(@RequestParam int f_num, HttpServletResponse response) throws Exception {
 		
-		BoardDTO dto = boardDao.b_getupperinfo(b_num);
+		BoardDTO dto = fileDao.FileInfo(f_num);
 		
 		response.setContentType("application/octet-stream");
 		response.setContentLength((int)dto.getB_filesize());

@@ -16,7 +16,7 @@ public class BoardDTO {
 	private String b_content;
 	private String b_filename;
 	private byte[] b_blob;
-	private MultipartFile b_file;
+	private MultipartFile[] b_file;
 	private long b_filesize;
 	private int b_readcount;
 	private Date b_date;
@@ -25,6 +25,8 @@ public class BoardDTO {
 	private int c_count;
 	private int b_count;
 	private int idx;
+	private int f_count;
+	private int f_num;
 	public int getB_num() {
 		return b_num;
 	}
@@ -85,10 +87,10 @@ public class BoardDTO {
 	public void setB_blob(byte[] b_blob) {
 		this.b_blob = b_blob;
 	}
-	public MultipartFile getB_file() {
+	public MultipartFile[] getB_file() {
 		return b_file;
 	}
-	public void setB_file(MultipartFile b_file) {
+	public void setB_file(MultipartFile[] b_file) {
 		this.b_file = b_file;
 	}
 	public long getB_filesize() {
@@ -138,6 +140,18 @@ public class BoardDTO {
 	}
 	public void setIdx(int idx) {
 		this.idx = idx;
+	}
+	public int getF_count() {
+		return f_count;
+	}
+	public void setF_count(int f_count) {
+		this.f_count = f_count;
+	}
+	public int getF_num() {
+		return f_num;
+	}
+	public void setF_num(int f_num) {
+		this.f_num = f_num;
 	}
 	
 }

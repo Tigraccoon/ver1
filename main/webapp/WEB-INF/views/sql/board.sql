@@ -67,9 +67,6 @@ b_writer varchar2(60) not null, --작성자
 b_pwd varchar2(70) not null,    --비밀번호
 b_subject varchar2(170) not null, --제목
 b_content clob not null, --본문
-b_filename varchar2(300), --파일 이름
-b_file blob,            --파일
-b_filesize number,     --파일 크기
 b_readcount number default 0,	--조회수
 b_date date default sysdate, --작성일자 
 b_show char(1) default 'Y',    --게시판 출력 여부
@@ -101,7 +98,21 @@ create sequence seq_comment
 start with 1
 increment by 1;
 
+drop table board_file;
+create table board_file(
+f_num number not null primary key,
+b_num number not null,
+b_filename varchar2(300), --파일 이름
+b_file blob,            --파일
+b_filesize number     --파일 크기
+);
 
+select * from board_file;
+
+drop sequence seq_file;
+create sequence seq_file
+start with 1
+increment by 1;
 
 declare --선언부
     i number := 2;
@@ -140,7 +151,8 @@ SELECT * FROM (
 			A.* FROM (
 				SELECT level, b_num,b_unum, b_gnum,b_mnum,b_writer,LPAD(' ', 4*(LEVEL-1)) || CASE WHEN (LEVEL -1) > 0 THEN '┖ ' END || b_subject as b_subject
                     , b_pwd ,b_date,b_readcount,b_show,b_secret 
-	  				,(select count(*) from board_comment c where c.b_num=b.b_num and c_show='Y') c_count
+	  				,(select count(*) from board_comment c where c.b_num=b.b_num and c_show='Y') c_count,
+                    (select count(*) from board_file f where f.b_num=b.b_num) f_count
 					FROM board b
 					WHERE b.b_show LIKE '%' AND b.b_writer LIKE '%'
                     START WITH b_unum IS NULL

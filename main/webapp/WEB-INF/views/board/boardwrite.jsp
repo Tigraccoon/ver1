@@ -222,22 +222,26 @@ function pwdcheck(target){
 
 function filesizecheck(tfile, str){
 	
-	 const max = 10485760;
+	const max = 10485760;
+
+	var tsize = 0;
 	 
-	 var tsize = tfile.files[0].size;
+	for(var i=0 ; i < tfile.files.length ; i++){
+		tsize += tfile.files[i].size;
+	}
 	
-	 var tmb = Math.ceil(tsize / 1024 / 1024);
+	var tmb = Math.ceil(tsize / 1024 / 1024);
 	 
-	 if(tsize > max){
-		 alert('첨부 파일은 10MB 이내로 등록 가능합니다.\n현재 파일 크기 : '+tmb+"MB");
-		 $('#b_file').val('');
-	 } else if(tsize == 0){
+	if(tsize > max){
+		alert('첨부 파일들은 10MB 이내로 등록 가능합니다.\n현재 등록한 파일들의 크기 : '+tmb+"MB");
+		$('#b_file').val('');
+	} else if(tsize == 0){
 		str.css("color", "black");
 		str.text('(' + tmb + ' MB/' + 10 + ' MB)');
-	 } else {
+	} else {
 		str.css("color", "blue");
 		str.text('(' + tmb + ' MB/' + 10 + ' MB)');
-	 }
+	}
 	 
 }
 
@@ -286,7 +290,7 @@ function filesizecheck(tfile, str){
 	<tr class="table-primary">
 		<th><label for="b_file">파일</label></th>
 		<td>
-			<input type="file" class="form-control-file" id="b_file" name="b_file"
+			<input type="file" class="form-control-file" id="b_file" name="b_file" multiple="multiple"
 			onchange="filesizecheck(this, $('#filesize'));">
 		</td>
 		<td width="150px" id="filesize">(0 MB/10 MB)</td>

@@ -110,8 +110,8 @@ function pwdlengthcheck(target, maxlength, str) {
 	
 }
 
-function fn_filedown(b_num){
-	window.open('${path}/board/filedown.do?b_num='+b_num,'#');
+function fn_filedown(f_num){
+	window.open('${path}/board/filedown.do?f_num='+f_num,'#');
 }
 
 </script>
@@ -138,10 +138,13 @@ function fn_filedown(b_num){
 		<td colspan="4" height="1500%">
 			<div id="cont" style="white-space: normal; word-wrap: break-word;">${var.b_content }
 			<br><br><br><br><br><br><br>
-			<c:if test="${var.b_filename != null }">
-			첨부파일  :  ${var.b_filename } 
-			(<fmt:formatNumber pattern="#,###" value="${var.b_filesize }"/> KB) 
-			<button class="btn btn-outline-secondary" onclick="fn_filedown('${var.b_num}')">다운받기</button>
+			<c:if test="${var.f_count >= 0 }">
+				<c:forEach items="${far }" var="far">
+					첨부파일  :  ${far.b_filename } 
+					(<fmt:formatNumber pattern="#,###" value="${far.b_filesize }"/> KB) 
+					<button class="btn btn-outline-secondary btn-sm"
+					 onclick="fn_filedown('${far.f_num}')">다운받기</button><br>
+				</c:forEach>
 			</c:if>
 			</div>
 		</td>
