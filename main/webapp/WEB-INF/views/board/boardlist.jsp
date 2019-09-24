@@ -87,8 +87,8 @@ function list(page, option, keyword){
 		<c:if test="${list.b_show == 'N' && list.b_secret == 'N'}">
 		<tr>	
 			<th scope="row" style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">${list.idx }</th>
-			<td colspan="2" style="text-align: center;">
-				삭제된 글입니다
+			<td colspan="2" style="text-align: left;">
+				${list.b_subject }
 			</td>
 			<td>
 				${list.b_readcount }

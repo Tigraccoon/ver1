@@ -108,8 +108,9 @@ public class BoardController {
 		int b_num = boardDao.b_insert(dto);
 		
 		dto.setB_num(b_num);
+
 		
-		if(dto.getB_file().length >= 0) {
+		if(dto.getB_file().length > 1) {
 			
 			for(int i=0; i < dto.getB_file().length ; i++) {
 				dto.setB_filename(dto.getB_file()[i].getOriginalFilename());
@@ -259,18 +260,29 @@ public class BoardController {
 	@RequestMapping("boardupdate.do")
 	public String bupdatedo(@ModelAttribute BoardDTO dto) {
 		
-		if(dto.getB_file().length >= 0) {
+		if(!dto.getTemp().isEmpty()) {
+			
+			String[] num = dto.getTemp().split("/");
+			
+			for(String n : num) {
+				fileDao.DelFile(Integer.parseInt(n));
+			}
+		}
+		
+		
+		if(dto.getB_file().length > 1) {
 			
 			for(int i=0; i < dto.getB_file().length; i++) {
 				
 				dto.setB_filename(dto.getB_file()[i].getOriginalFilename());
-				//삭제 로직 만들고 추가 로직도 만들
 				try {
 					
 					byte[] bt = dto.getB_file()[i].getBytes();
 					
 					dto.setB_blob(bt);
 					dto.setB_filesize(bt.length);
+					
+					fileDao.InsertFile(dto);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -321,6 +333,17 @@ public class BoardController {
 		
 		mav.setViewName("board/boardre");
 		mav.addObject("var", dto);
+
+		List<BoardDTO> fdto = fileDao.FileList(dto.getB_num());
+		
+		long f_tsize=0;
+		
+		for(BoardDTO tdto : fdto) {
+			f_tsize += tdto.getB_filesize();
+		}
+		
+		mav.addObject("far", fdto);
+		mav.addObject("f_tsize", f_tsize);
 		
 		return mav;
 	}
@@ -332,7 +355,7 @@ public class BoardController {
 		
 		dto.setB_num(b_num);
 		
-		if(dto.getB_file().length >= 0) {
+		if(dto.getB_file().length > 1) {
 			
 			for(int i=0; i< dto.getB_file().length; i++) {
 				

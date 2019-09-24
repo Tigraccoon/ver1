@@ -261,12 +261,53 @@ function filesizecheck(tfile, str){
 }
 
 
-function fn_filedel(fnum, fsize){
-	/* 여기 */
+function fn_filedel(fnum, fsize, str){
+
+	var temp = $("#temp").val();
+	
+	temp += fnum+"/";
+	
+	$("#temp").val(temp); 
+
+	ftsize -= fsize;
+	
+	var tmb = Math.ceil(ftsize / 1024 / 1024);
+	
+	if(ftsize == 0){
+		str.css("color", "black");
+		str.text('(' + tmb + ' MB/' + 10 + ' MB)');
+	} else if(ftsize < max) {
+		str.css("color", "blue");
+		str.text('(' + tmb + ' MB/' + 10 + ' MB)');
+	} else if(ftsize = max){
+		str.css("color", "red");
+		str.text('(' + tmb + ' MB/' + 10 + ' MB)');
+	}
+	
 }
 
-function fn_filere(fnum, fsize){
+function fn_filere(fnum, fsize, str){
 
+	var temp = $("#temp").val();
+	
+	temp = temp.replace(fnum+'/', '');
+	
+	$("#temp").val(temp); 
+
+	ftsize += fsize;
+	
+	var tmb = Math.ceil(ftsize / 1024 / 1024);
+	
+	if(ftsize == 0){
+		str.css("color", "black");
+		str.text('(' + tmb + ' MB/' + 10 + ' MB)');
+	} else if(ftsize < max) {
+		str.css("color", "blue");
+		str.text('(' + tmb + ' MB/' + 10 + ' MB)');
+	} else if(ftsize = max){
+		str.css("color", "red");
+		str.text('(' + tmb + ' MB/' + 10 + ' MB)');
+	}
 }
 </script>
 </head>
@@ -311,22 +352,14 @@ function fn_filere(fnum, fsize){
 		<th><label for="b_file">파일</label></th>
 		<td>
 			<input type="file" class="form-control-file" id="b_file" name="b_file" multiple="multiple"
-			onchange="filesizecheck(this, $('#filesize'));"
-			onclick="
-				if('${var.b_filesize}' > 0){
-					 if(confirm('첨부파일 재 등록시 원본 첨부파일은 삭제됩니다.') == true){
-					 	return true;
-					 } else{
-					 	return false;
-					 }
-				 }
-			">
+			onchange="filesizecheck(this, $('#filesize'));">
 		</td>
 		<td width="150px" id="filesize">(0 MB/10 MB)</td>
 	</tr>
 	<tr class="table-primary">
 		<th><label>기존 첨부파일</label></th>
 		<td colspan="2">
+		<c:if test="${f_tsize > 0 }">
   			<c:forEach var="far" items="${far }">
   				첨부파일  :  ${far.b_filename } 
 					(<fmt:formatNumber pattern="#,###" value="${far.b_filesize / 1024 }"/> KB) 
@@ -334,13 +367,14 @@ function fn_filere(fnum, fsize){
 					 onclick="
 						 if(this.value == '파일삭제'){
 						 		this.value = '삭제취소';
-							 	fn_filedel('${far.f_num}', ${far.b_filesize });
+							 	fn_filedel('${far.f_num}', ${far.b_filesize },$('#filesize'));
 						 	} else{
 						 		this.value = '파일삭제';
-						 		fn_filere('${far.f_num }', ${far.b_filesize });
+						 		fn_filere('${far.f_num }', ${far.b_filesize },$('#filesize'));
 						 	}
 					 "><br>
   			</c:forEach>
+		</c:if>
 		</td>
 	</tr>
 	<tr class="table-primary">
@@ -356,6 +390,7 @@ function fn_filere(fnum, fsize){
 			<input type="button" value="삭제" class="btn btn-block btn-danger" id="btnDelete">
 			<input type="hidden" value="${var.b_num }" name="b_num" id="b_num">
 			<input type="hidden" value="${var.b_mnum }" name="b_mnum">
+			<input type="hidden" name="temp" id="temp">
 		</td>
 	</tr>
 	<tr class="table-primary">

@@ -138,7 +138,7 @@ function fn_filedown(f_num){
 		<td colspan="4" height="1500%">
 			<div id="cont" style="white-space: normal; word-wrap: break-word;">${var.b_content }
 			<br><br><br><br><br><br><br>
-			<c:if test="${var.f_count >= 0 }">
+			<c:if test="${var.f_count > 0 }">
 				<c:forEach items="${far }" var="far">
 					첨부파일  :  ${far.b_filename } 
 					(<fmt:formatNumber pattern="#,###" value="${far.b_filesize }"/> KB) 

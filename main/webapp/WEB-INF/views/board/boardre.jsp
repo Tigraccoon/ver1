@@ -222,24 +222,33 @@ function pwdcheck(target){
 
 function filesizecheck(tfile, str){
 	
-	 const max = 10485760;
-	 
-	 var tsize = tfile.files[0].size;
+	const max = 10485760;
 	
-	 var tmb = Math.ceil(tsize / 1024 / 1024);
+	var tsize = 0;
 	 
-	 if(tsize > max){
-		 alert('첨부 파일은 10MB 이내로 등록 가능합니다.\n현재 파일 크기 : '+tmb);
-		 $('#b_file').val('');
-	 } else if(tsize == 0){
+	for(var i=0 ; i < tfile.files.length ; i++){
+		tsize += tfile.files[i].size;
+	}
+		
+	var tmb = Math.ceil(tsize / 1024 / 1024);
+	 
+	if(tsize > max){
+		alert('첨부 파일은 10MB 이내로 등록 가능합니다.\n현재 파일 크기 : '+tmb);
+		$('#b_file').val('');
+	} else if(tsize == 0){
 		str.css("color", "black");
 		str.text('(' + tmb + ' MB/' + 10 + ' MB)');
-	 } else {
+	} else {
 		str.css("color", "blue");
 		str.text('(' + tmb + ' MB/' + 10 + ' MB)');
-	 }
+	}
 	 
 }
+
+function fn_filedown(f_num){
+	window.open('${path}/board/filedown.do?f_num='+f_num,'#');
+}
+
 
 </script>
 </head>
@@ -294,7 +303,7 @@ function filesizecheck(tfile, str){
 	<tr class="table-primary">
 		<th><label for="b_file">파일</label></th>
 		<td>
-			<input type="file" class="form-control-file" id="b_file" name="b_file"
+			<input type="file" class="form-control-file" id="b_file" name="b_file" multiple="multiple"
 			onchange="filesizecheck(this, $('#filesize'));">
 		</td>
 		<td width="150px" id="filesize">(0 MB/10 MB)</td>
@@ -357,11 +366,11 @@ function filesizecheck(tfile, str){
 					<div id="cont" style="white-space: normal; word-wrap: break-word;">
 					${var.b_content }
 					<br><br><br><br><br><br><br>
-					<c:if test="${var.b_filename != null }">
-					첨부파일  :  ${var.b_filename } 
-					(<fmt:formatNumber pattern="#,###" value="${var.b_filesize }"/> KB) 
-					<button class="btn btn-outline-secondary" onclick="fn_filedown('${var.b_num}')">다운받기</button>
-					</c:if>
+					<c:forEach items="${far }" var="far">
+					첨부파일  :  ${far.b_filename } 
+					(<fmt:formatNumber pattern="#,###" value="${far.b_filesize }"/> KB) 
+					<button class="btn btn-outline-secondary" onclick="fn_filedown('${far.f_num}')">다운받기</button><br>
+					</c:forEach>
 					</div>
 				</td>
 			</tr>

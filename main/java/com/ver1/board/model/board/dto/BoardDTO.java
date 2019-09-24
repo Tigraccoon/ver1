@@ -27,6 +27,7 @@ public class BoardDTO {
 	private int idx;
 	private int f_count;
 	private int f_num;
+	private String temp;
 	public int getB_num() {
 		return b_num;
 	}
@@ -153,5 +154,12 @@ public class BoardDTO {
 	public void setF_num(int f_num) {
 		this.f_num = f_num;
 	}
+	public String getTemp() {
+		return temp;
+	}
+	public void setTemp(String temp) {
+		this.temp = temp;
+	}
+	
 	
 }

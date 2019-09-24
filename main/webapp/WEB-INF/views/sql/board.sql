@@ -161,6 +161,22 @@ SELECT * FROM (
 					) A
 		) WHERE rn BETWEEN 1 AND 10 order by rn ASC; 
         
+
+SELECT * FROM (
+             SELECT rownum AS rn, ROW_NUMBER() OVER(ORDER BY rownum DESC) as idx,
+			A.* FROM (
+				SELECT level, b_num,b_unum, b_gnum,b_mnum,b_writer,b_secret, 
+                LPAD(' ', 4*(LEVEL-1)) || CASE WHEN (LEVEL -1) > 0 THEN 'ε ' END || DECODE(b_show, 'N', '昏力等 臂涝聪促', 'Y', b_subject) as b_subject
+                    , b_pwd ,b_date,b_readcount,b_show
+	  				,(select count(*) from board_comment c where c.b_num=b.b_num and c_show='Y') c_count,
+                    (select count(*) from board_file f where f.b_num=b.b_num) f_count
+					FROM board b
+					WHERE b.b_show LIKE '%' AND b.b_writer LIKE '%'
+                    START WITH b_unum IS NULL
+                    CONNECT BY PRIOR b_num = b_unum  
+					ORDER SIBLINGS BY b_gnum DESC, b_num DESC
+					) A
+		) WHERE rn BETWEEN 1 AND 10 order by rn ASC; 
         
         
 select * from board order by b_num desc;
@@ -191,6 +207,7 @@ INSERT INTO board
 			VALUES(seq_b.nextval,seq_b.nextval, '累己磊1', '1234', '力俊格', '郴局局局局侩');
 
 select * from board;
+select * from board_file order by f_num desc;
 
 commit;
 
