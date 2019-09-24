@@ -213,6 +213,17 @@ public class BoardController {
 		
 		if(result) {
 			mav.addObject("var", tempdto);
+			
+			List<BoardDTO> fdto = fileDao.FileList(dto.getB_num());
+			
+			long f_tsize=0;
+			
+			for(BoardDTO tdto : fdto) {
+				f_tsize += tdto.getB_filesize();
+			}
+			
+			mav.addObject("far", fdto);
+			mav.addObject("f_tsize", f_tsize);
 			mav.setViewName("board/boardupdel");
 		} else {
 			String b_subject = tempdto.getB_subject();
@@ -253,7 +264,7 @@ public class BoardController {
 			for(int i=0; i < dto.getB_file().length; i++) {
 				
 				dto.setB_filename(dto.getB_file()[i].getOriginalFilename());
-				
+				//삭제 로직 만들고 추가 로직도 만들
 				try {
 					
 					byte[] bt = dto.getB_file()[i].getBytes();

@@ -16,12 +16,18 @@
     <script src="${path }/include/summernote/lang/summernote-ko-KR.js"></script>
     
     <script type="text/javascript">
+    
+let ftsize = ${f_tsize};
+const max = 10485760;
+		
 $(document).ready(function() {
 	registerSummernote($('#b_content'), '본문을 입력하세요.', 2000, function(max) {
 	    $('#maxContentPost').text(max)
 	});
 	
-	
+	if(${f_tsize} != 0){
+		$('#filesize').text('(' + ${Math.ceil(f_tsize / 1024 / 1024)} + 'MB/' + 10 + 'MB)');
+	}
 	
 	$("#btnUpdate").click(function(){
 		
@@ -228,23 +234,39 @@ function subjectcheck(subject) {
 
 function filesizecheck(tfile, str){
 	
-	 const max = 10485760;
+	var tsize = ftsize;
 	 
-	 var tsize = tfile.files[0].size;
+	for(var i=0 ; i < tfile.files.length ; i++){
+		tsize += tfile.files[i].size;
+	}
 	
-	 var tmb = Math.ceil(tsize / 1024 / 1024);
-	 
-	 if(tsize > max){
-		 alert('첨부 파일은 10MB 이내로 등록 가능합니다.\n현재 파일 크기 : '+tmb);
-		 return false;
-	 } else if(tsize == 0){
+	var tmb = Math.ceil(tsize / 1024 / 1024);
+	
+	ftsize = tsize;
+	
+	if(tsize > max){
+		alert('첨부 파일들은 10MB 이내로 등록 가능합니다.\n현재 등록한 파일들의 크기 : '+tmb+"MB");
+		$('#b_file').val('');
+	} else if(tsize == 0){
 		str.css("color", "black");
 		str.text('(' + tmb + ' MB/' + 10 + ' MB)');
-	 } else {
+	} else if(tsize < max) {
 		str.css("color", "blue");
 		str.text('(' + tmb + ' MB/' + 10 + ' MB)');
-	 }
+	} else if(tsize = max){
+		str.css("color", "red");
+		str.text('(' + tmb + ' MB/' + 10 + ' MB)');
+	}
 	 
+}
+
+
+function fn_filedel(fnum, fsize){
+	/* 여기 */
+}
+
+function fn_filere(fnum, fsize){
+
 }
 </script>
 </head>
@@ -288,10 +310,7 @@ function filesizecheck(tfile, str){
 	<tr class="table-primary">
 		<th><label for="b_file">파일</label></th>
 		<td>
-			<%--  
-			<c:if test="${var.b_filename != null }">${var.b_filename }</c:if>
-			--%>
-			<input type="file" class="form-control-file" id="b_file" name="b_file"
+			<input type="file" class="form-control-file" id="b_file" name="b_file" multiple="multiple"
 			onchange="filesizecheck(this, $('#filesize'));"
 			onclick="
 				if('${var.b_filesize}' > 0){
@@ -304,6 +323,25 @@ function filesizecheck(tfile, str){
 			">
 		</td>
 		<td width="150px" id="filesize">(0 MB/10 MB)</td>
+	</tr>
+	<tr class="table-primary">
+		<th><label>기존 첨부파일</label></th>
+		<td colspan="2">
+  			<c:forEach var="far" items="${far }">
+  				첨부파일  :  ${far.b_filename } 
+					(<fmt:formatNumber pattern="#,###" value="${far.b_filesize / 1024 }"/> KB) 
+					<input type="button" class="btn btn-outline-danger btn-sm" value="파일삭제"
+					 onclick="
+						 if(this.value == '파일삭제'){
+						 		this.value = '삭제취소';
+							 	fn_filedel('${far.f_num}', ${far.b_filesize });
+						 	} else{
+						 		this.value = '파일삭제';
+						 		fn_filere('${far.f_num }', ${far.b_filesize });
+						 	}
+					 "><br>
+  			</c:forEach>
+		</td>
 	</tr>
 	<tr class="table-primary">
 		<th colspan="2"><label for="b_content">본문</label></th>

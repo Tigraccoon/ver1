@@ -194,3 +194,4 @@ select * from board;
 
 commit;
 
+delete from board where b_num > 251;

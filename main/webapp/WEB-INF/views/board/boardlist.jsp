@@ -50,7 +50,7 @@ function list(page, option, keyword){
 		<th scope="col" style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">번호</th>
 		<th scope="col" width="50%" style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">제목</th>
 		<th scope="col" style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">작성자</th>
-		<th scope="col" style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">조회수</th>
+		<th scope="col" style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">조회수/파일</th>
 		<th scope="col" width="15%" style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">날짜</th>
 	</tr>
 </thead>
@@ -63,17 +63,22 @@ function list(page, option, keyword){
 	<!-- 일반글 -->
 		<c:if test="${list.b_show == 'Y' && list.b_secret == 'N'}">
 		<tr>
-			<th scope="row" style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">${list.idx }</th>
+			<th scope="row" style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">${list.idx } </th>
 			<td style="text-align: left;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">
 				<a href="${path }/board/boardview.go?b_num=${list.b_num}" title="${list.b_subject }">
 				${list.b_subject }
 					<c:if test="${list.c_count > 0 }">
-						<label style="color: black">(${list.c_count })</label>
+						<label style="color: black">(${list.c_count })  </label>
 					</c:if>
 				</a>
 			</td>
 			<td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">${list.b_writer }</td>
-			<td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">${list.b_readcount }</td>
+			<td style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">
+				${list.b_readcount } 
+				<c:if test="${list.f_count > 0 }">
+						 / <i class="fa fa-floppy-o"></i>
+				</c:if>
+			</td>
 			<td width="10%" style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">
 				<fmt:formatDate value="${list.b_date }" pattern="yyyy-MM-dd hh:mm:ss E"/>
 			</td>
@@ -82,8 +87,11 @@ function list(page, option, keyword){
 		<c:if test="${list.b_show == 'N' && list.b_secret == 'N'}">
 		<tr>	
 			<th scope="row" style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">${list.idx }</th>
-			<td colspan="3" style="text-align: center;">
+			<td colspan="2" style="text-align: center;">
 				삭제된 글입니다
+			</td>
+			<td>
+				${list.b_readcount }
 			</td>
 			<td width="15%" style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;">
 				<fmt:formatDate value="${list.b_date }" pattern="yyyy-MM-dd hh:mm:ss E"/>
