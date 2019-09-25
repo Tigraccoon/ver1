@@ -2,7 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ page session="true" %>
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
 <meta charset="UTF-8">
 <title>답글쓰기</title>

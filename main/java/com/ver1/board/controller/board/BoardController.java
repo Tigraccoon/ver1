@@ -395,5 +395,9 @@ public class BoardController {
 		
 	}
 	
+	@RequestMapping("excel.do")
+	public void exceldo(HttpServletResponse response) throws Exception {
+		boardDao.excel(response);
+	}
 	
 }

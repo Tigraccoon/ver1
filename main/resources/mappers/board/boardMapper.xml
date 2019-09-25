@@ -74,6 +74,27 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			WHERE b_num=#{b_num} OR b_mnum=#{b_mnum}
 	</select>
 	
+		<!-- 글 리스트 -->
+	<select id="excel" resultType="BoardDTO" fetchSize="100">
+		SELECT * FROM (
+			SELECT rownum AS rn, ROW_NUMBER() OVER(ORDER BY rownum DESC) as idx,
+			A.* FROM (
+				SELECT level, b_num,b_unum, b_gnum,b_writer,b_content
+					,LPAD(' ', 4*(LEVEL-1)) || CASE WHEN (LEVEL -1) > 0 THEN '┖ ' END 
+					|| DECODE(b_show, 'N', '삭제된 글입니다', 'Y', b_subject) as b_subject
+                    , b_pwd ,b_date,b_readcount,b_show,b_secret 
+	  				,(select count(*) from board_comment c where c.b_num=b.b_num and c_show='Y') c_count,
+	  				(select count(*) from board_file f where f.b_num=b.b_num) f_count
+					FROM board b
+					<include refid="search" />
+					START WITH b_unum IS NULL
+                    CONNECT BY PRIOR b_num = b_unum  
+					ORDER SIBLINGS BY b_gnum DESC, b_num DESC 
+					) A
+		) 
+		ORDER BY rn ASC
+	</select>
+	
 <!-- /select -->
 	
 <!-- insert -->

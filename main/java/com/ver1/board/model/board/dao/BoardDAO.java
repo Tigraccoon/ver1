@@ -2,6 +2,7 @@ package com.ver1.board.model.board.dao;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.ver1.board.model.board.dto.BoardDTO;
@@ -20,5 +21,5 @@ public interface BoardDAO {
 	public boolean pwdcheck(BoardDTO dto);
 	public BoardDTO b_getupperinfo(int b_num);
 	public int b_reinsert(BoardDTO dto);
-	
+	public void excel(HttpServletResponse response);
 }
